@@ -101,8 +101,8 @@ class deleteAuditlog(APIView):
 
 class RegisterView(APIView):
 
-    # authentication_classes = [SessionAuthentication,BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication,BasicAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         detailsObj = Register.objects.all()
         serializeObj =RegisterSerializer(detailsObj, many = True)
@@ -114,7 +114,7 @@ class RegisterView(APIView):
             if serializeObj.is_valid():
                 serializeObj.save()
 
-    #             ##########  Registering the user in User model
+                ##########  Registering the user in User model
                 userMail = request.data['email']
                 userName = request.data['Name']
                 userPassword = 'password'

@@ -9,10 +9,12 @@ urlpatterns = [
     path('customer/', views.CustomersView.as_view()),
     path('customer/update/<int:pk>', views.updateCustomer.as_view()),
     path('customer/delete/<int:pk>', views.deleteCustomer.as_view()),
+    path('customer/<int:id>/',views. CustomerViewIndividual.as_view()),
 #----------------------------------------------------------------------
     path('locations/', views.LocationsView.as_view()),
     path('locations/update/<int:pk>', views.updateLocation.as_view()),
     path('locations/delete/<int:pk>', views.deleteLocation.as_view()),
+    path('locations/<int:id>/',views.LocationViewIndividual.as_view()),
     #----------------------------------------------------------------------
     path('product/', views.ProductView.as_view()),
     path('product/<int:id>/',views.Productindividual.as_view()),
@@ -22,6 +24,7 @@ urlpatterns = [
     path('shippo/', views.ShipPOView.as_view()),
     path('shippo/update/<int:pk>', views.updateShipPO.as_view()),
     path('shippo/delete/<int:pk>', views.deleteShipPO.as_view()),
+    path('shippo/<int:id>/',views.ShippoViewIndividual.as_view()),
     #-----------------------------------------------------------------------------
     path('productionorder/', views.ProductionOrderView.as_view()),
     path('productionorder/<int:id>/', views.ProductionOrderViewIndividual.as_view()),
@@ -39,4 +42,5 @@ urlpatterns = [
     path('stock/', views.StockView.as_view()),
     path('stock/update/<int:pk>', views.updateStock.as_view()),
     path('stock/delete/<int:pk>', views.deleteStock.as_view()),
+    path('stock/closed', views.Stockclosedview.as_view()),
 ]

@@ -117,6 +117,8 @@ class Product(models.Model):
     status =models.BooleanField(default=False)
     item_reference = models.CharField(max_length=40)
 
+
+    GS1_company_prefix = models.CharField(max_length=100,null=True,blank=True)
     AT_PZN = models.CharField(max_length=100,null=True,blank=True)
     BE_ABP_CODE = models.CharField(max_length=100,null=True,blank=True)
     BR_An_visa_Registration_Number = models.CharField(max_length=100,null=True,blank=True)
@@ -146,33 +148,7 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name 
-
-class ShipPO(models.Model):
-    id = models.AutoField(primary_key=True)
-    shipping_order_name = models.CharField(max_length=40)
-    source_location = models.ForeignKey(Locations,related_name='location_to_shippo',on_delete=models.CASCADE)
-    destination_location = models.ForeignKey(Locations,related_name='locations_to_shipping',on_delete=models.CASCADE)
-    subject_name = models.ForeignKey(Customers,related_name='customers_to_shippingpo',on_delete=models.CASCADE)
-    shipping_date = models.DateTimeField(auto_now_add=True)
-    status = models.BooleanField(default = False) # false = stock and true = shipped
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    created_by = models.CharField(max_length =100)
-    shipping_type = models.CharField(max_length=20,default='item')
-    batch_for_export = models.CharField(max_length=100,null=True,blank=True)
-    exempted_from_barcoding = models.CharField(max_length=100,null=True,blank=True)
-    exemption_notification_and_date = models.CharField(max_length=100,null=True,blank=True)
-    exempted_country_code = models.CharField(max_length=100,null=True,blank=True)
-    sold_to = models.CharField(max_length=100,null=True,blank=True)
-    delivery_number = models.CharField(max_length=100,null=True,blank=True)
-    # delivary_number equals to  advance_ship_notice are Batch number
-    delivary_number = models.CharField(max_length=100,null=True,blank=True)
-    advance_ship_notice = models.CharField(max_length=100,null=True,blank=True)
-
-    def __str__(self) :
-        return self.shipping_order_name
-
-
+    
 class ProductionOrder(models.Model):
     id = models.AutoField(primary_key=True)
     process_order_number = models.CharField(max_length= 20, unique= True)
@@ -210,11 +186,40 @@ class ProductionOrder(models.Model):
     email = models.EmailField(null=True)
     Barcodetypename = models.CharField(max_length=20, unique= True, null=True)
     model_name = models.CharField(max_length=50,null=True,blank=True)
-    stock_quantity= models.CharField(max_length=50,null=True,blank=True)
-    shipped= models.CharField(max_length=50,null=True,blank=True)
+    stock_quantity= models.CharField(max_length=50,null=True)
+    shipped= models.CharField(max_length=50,null=True)
 
     def __str__(self):
-        return self.manufacturing_location 
+        return self.manufacturing_location     
+
+class ShipPO(models.Model):
+    id = models.AutoField(primary_key=True)
+    shipping_order_name = models.CharField(max_length=40)
+    process_order_number=models.ForeignKey(ProductionOrder,related_name='processorderno_to_shippo',on_delete=models.CASCADE)
+    source_location = models.ForeignKey(Locations,related_name='location_to_shippo',on_delete=models.CASCADE)
+    destination_location = models.ForeignKey(Locations,related_name='locations_to_shipping',on_delete=models.CASCADE)
+    subject_name = models.ForeignKey(Customers,related_name='customers_to_shippingpo',on_delete=models.CASCADE)
+    shipping_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices = batch_status,default='Shipping') # false = stock and true = shipped
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.CharField(max_length =100)
+    shipping_type = models.CharField(max_length=20,default='item')
+    batch_for_export = models.CharField(max_length=100,null=True)
+    exempted_from_barcoding = models.CharField(max_length=100,null=True,blank=True)
+    exemption_notification_and_date = models.CharField(max_length=100,null=True,blank=True)
+    exempted_country_code = models.CharField(max_length=100,null=True,blank=True)
+    sold_to = models.CharField(max_length=100,null=True,blank=True)
+    delivery_number = models.CharField(max_length=100,null=True,blank=True)
+    # delivary_number equals to  advance_ship_notice are Batch number
+    delivary_number = models.CharField(max_length=100,null=True,blank=True)
+    advance_ship_notice = models.CharField(max_length=100,null=True,blank=True)
+
+    def __str__(self) :
+        return self.shipping_order_name
+
+
+
 
 class SnProvider(models.Model):
     id = models.AutoField(primary_key=True)
@@ -239,12 +244,12 @@ class SnProvider(models.Model):
 
 class Stock(models.Model):  
     id = models.AutoField(primary_key=True)  
-    productionorder_num = models.CharField(max_length=100)
-    product_name = models.CharField(max_length=100)
+    process_order_number = models.CharField(max_length=100)
+    product_conn = models.CharField(max_length=100)
     created_by = models.CharField(max_length =100)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    batch_num = models.CharField(max_length=50)
+    batch_number = models.CharField(max_length=50)
     requested = models.CharField(max_length=50)
     stock_quantity = models.CharField(max_length=50)#produced
     shipped = models.CharField(max_length=50)

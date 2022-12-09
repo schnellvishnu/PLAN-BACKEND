@@ -170,8 +170,8 @@ class Sapproductionorder(models.Model):
     email = models.EmailField(null=True)
     Barcodetypename = models.CharField(max_length=20, unique= True, null=True)
     model_name = models.CharField(max_length=50,null=True,blank=True)
-    stock_quantity= models.CharField(max_length=50,null=True,blank=True)
-    shipped= models.CharField(max_length=50,null=True,blank=True)
+    stock_quantity= models.CharField(max_length=50,null=True)
+    shipped= models.CharField(max_length=50,null=True)
 
     def __str__(self):
         return self.manufacturing_location

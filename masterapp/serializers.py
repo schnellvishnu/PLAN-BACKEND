@@ -9,12 +9,14 @@ class CustomersSerializer(serializers.ModelSerializer):
     
     class Meta:
         model =Customers
-        fields =['id','name','created_by']
+        fields =['id','name','created_by','company_prefix','company_gln','address','zip']
+        # fields="__all__"
 class LocationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model =Locations
-        fields = ['id','customer_id','name','created_by','loc_gln']
+        fields = ['id','customer_id','name','created_by','loc_gln','address','zip','state']
+        # fields="__all__"
 class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
@@ -24,7 +26,8 @@ class ShipPOSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ShipPO
-        fields = "__all__"
+        fields="__all__"
+        # fields = ["id","shipping_order_name","source_location","destination_location","subject_name","shipping_date","batch_for_export","created_by"]
 class ProductionOrderSerializer(serializers.ModelSerializer):
     
     class Meta:

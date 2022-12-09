@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'djangoschnell.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'sidbar_db',
+    'NAME': 'sidbar_db2',
     'USER': 'postgres',
     # 'PASSWORD': get_secrets('DB_PASSWORD'),
     'PASSWORD': '1234',

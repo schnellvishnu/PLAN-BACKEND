@@ -90,6 +90,12 @@ class deleteCustomer(APIView):
 
         detailsObj.delete()
         return Response(200)
+    
+class CustomerViewIndividual(APIView):
+    def get(self, request, id):
+        detailsObj = Customers.objects.all().filter(id=id)
+        serializeObj = CustomersSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)       
 #----------------------------------------------------------
 
 class LocationsView(APIView):
@@ -128,6 +134,13 @@ class deleteLocation(APIView):
 
         detailsObj.delete()
         return Response(200)
+    
+class LocationViewIndividual(APIView):
+    def get(self, request, id):
+        detailsObj = Locations.objects.all().filter(id=id)
+        serializeObj = LocationSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)    
+    
 #______________________________________________________________
 
 class ProductView(APIView):
@@ -182,11 +195,20 @@ class ShipPOView(APIView):
 
    
     def post(self, request):
-        serializeObj =ShipPOSerializer(data=request.data)
+  
+        serializeObj = ShipPOSerializer(data=request.data)
+
         if serializeObj.is_valid():
+
             serializeObj.save()
+            record = ProductionOrder.objects.get(id=request.data["process_order_number"])
+            record.status = "Shipping"
+            record.save()
             return Response(200)
+
         return Response(serializeObj.errors)
+
+            
 
 class updateShipPO(APIView):
     def put(self, request, pk):
@@ -210,6 +232,11 @@ class deleteShipPO(APIView):
 
         detailsObj.delete()
         return Response(200)
+class ShippoViewIndividual(APIView):
+      def get(self, request, id):
+        detailsObj = ShipPO.objects.all().filter(id=id)
+        serializeObj = ShipPOSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)
 #-----------------------------------------------------------------------
 class ProductionOrderView(APIView):
     def get(self, request):
@@ -335,6 +362,9 @@ class StockView(APIView):
         detailsObj =Stock.objects.all()
         serializeObj = StockSerializer(detailsObj, many = True)
         return Response(serializeObj.data)
+  
+   
+
 
   
     def post(self, request):
@@ -366,3 +396,9 @@ class deleteStock(APIView):
 
         detailsObj.delete()
         return Response(200)
+
+class Stockclosedview(APIView):
+       def get(self, request):
+            detailsObj = ProductionOrder.objects.all().filter(status='Closed')
+            serializeObj = ProductionOrderSerializer(detailsObj, many=True)
+            return Response(serializeObj.data)      

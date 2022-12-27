@@ -8,7 +8,7 @@ urlpatterns = [
     path('manufacturinglocation/delete/<int:pk>', views.deleteManufacturingLocations.as_view()),
     # ------------------------------------------------------------------------------------------
     path('registeredsystem/', views.RegisterSystemView.as_view()),
-    path('registeredsystem/<int:id>',views.RegisterSystemindividual.as_view()),
+    path('registeredsystem/<int:id>/',views.RegisterSystemindividual.as_view()),
     path('registeredsystem/update/<int:pk>', views.updateRegisterSystem.as_view()),
     path('registeredsystem/delete/<int:pk>', views.deleteRegisterSystem.as_view()),
     #---------------------------------------------------------------------------------------------

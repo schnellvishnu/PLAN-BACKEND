@@ -1,4 +1,4 @@
-from accounts.models import UserRole,AuditLog,Register
+from accounts.models import UserRole,History,Register
 from rest_framework import serializers
 from django.contrib.auth.models import User
 class UserRoleSerializer(serializers.ModelSerializer):
@@ -6,10 +6,10 @@ class UserRoleSerializer(serializers.ModelSerializer):
     class Meta:
         model =UserRole
         fields = "__all__"
-class AuditLogSerializer(serializers.ModelSerializer):
+class HistorySerializer(serializers.ModelSerializer):
     
     class Meta:
-        model =AuditLog
+        model =History
         fields = "__all__"
 class RegisterSerializer(serializers.ModelSerializer):
     

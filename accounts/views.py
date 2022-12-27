@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-from accounts.models import  UserRole,AuditLog,Register
-from accounts.serializers import UserRoleSerializer,AuditLogSerializer,RegisterSerializer
+from accounts.models import  UserRole,AuditLog,Register,History
+from accounts.serializers import UserRoleSerializer,HistorySerializer,RegisterSerializer
 # from masterapp.permissions import ObjectDestroyPermission, Productpermission
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -14,6 +14,7 @@ from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from django.contrib.auth.models import User
+
 
 
 # from django_filters.rest_framework import  DjangoFilterBackend
@@ -61,35 +62,35 @@ class deleteUserrole(APIView):
 #-----------------------------------------------------------
 class AuditLogView(APIView):
     def get(self, request):
-        detailsObj = AuditLog.objects.all()
-        serializeObj = AuditLogSerializer(detailsObj, many = True)
+        detailsObj = History.objects.all()
+        serializeObj = HistorySerializer(detailsObj, many = True)
         return Response(serializeObj.data)
 
    
-    def post(self, request):
-        serializeObj = AuditLogSerializer(data=request.data)
-        if serializeObj.is_valid():
-            serializeObj.save()
-            return Response(200)
-        return Response(serializeObj.errors)
+#     def post(self, request):
+#         serializeObj = AuditLogSerializer(data=request.data)
+#         if serializeObj.is_valid():
+#             serializeObj.save()
+#             return Response(200)
+#         return Response(serializeObj.errors)
 
-class updateAuditlog(APIView):
-    def put(self, request, pk):
-        try:
-            detailObj = AuditLog.objects.get(pk=pk)
-        except:
-            return Response("Not found in database")
+# class updateAuditlog(APIView):
+#     def put(self, request, pk):
+#         try:
+#             detailObj = AuditLog.objects.get(pk=pk)
+#         except:
+#             return Response("Not found in database")
 
-        serializeObj = AuditLogSerializer(detailObj, data=request.data)
-        if serializeObj.is_valid():
-            serializeObj.save()
-            return Response(200)
-        return Response(serializeObj.errors)
+#         serializeObj = AuditLogSerializer(detailObj, data=request.data)
+#         if serializeObj.is_valid():
+#             serializeObj.save()
+#             return Response(200)
+#         return Response(serializeObj.errors)
 
 class deleteAuditlog(APIView):
     def delete(self, request, pk):
         try:
-            detailsObj = AuditLog.objects.get(pk=pk)
+            detailsObj = History.objects.get(pk=pk)
         except:
             return Response("Not found in database")
 
@@ -101,8 +102,8 @@ class deleteAuditlog(APIView):
 
 class RegisterView(APIView):
 
-    authentication_classes = [SessionAuthentication,BasicAuthentication]
-    permission_classes = [IsAuthenticated]
+    # authentication_classes = [SessionAuthentication,BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get(self, request):
         detailsObj = Register.objects.all()
         serializeObj =RegisterSerializer(detailsObj, many = True)
@@ -174,6 +175,12 @@ class userAuthVerify(APIView):
 
 	# def post(self, request):
 	# 	return Response(201)
+ 
+class  Registerindividual(APIView):
+    def get(self, request, id):
+        detailsObj =Register.objects.all().filter(id=id)
+        serializeObj = RegisterSerializer(detailsObj, many=True)
+        return Response(serializeObj.data) 
 
 #________________________________________________________
 

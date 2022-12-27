@@ -91,6 +91,17 @@ class Register(models.Model):
     key = models.CharField(max_length=500, default="key")
 
 
-    
+
+
+class History(models.Model):
+    id = models.AutoField(primary_key=True)
+    modelName = models.CharField(max_length=100)
+    savedID = models.CharField(max_length=100)
+    operationDone = models.CharField(max_length=100)
+    doneByUser = models.CharField(max_length=100)
+    doneByUserRole = models.CharField(max_length=100)
+    doneDateTime = models.DateTimeField(max_length=100)
+    def __str__(self):
+        return self.doneByUser    
     
     

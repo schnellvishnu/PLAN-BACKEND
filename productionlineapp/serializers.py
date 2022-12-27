@@ -8,7 +8,7 @@ class ManufacturingLocSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = ManufacturingLocations
-        fields = ['id','name','created_by']
+        fields = ['id','name','created_by',"address","gln_number"]
         # read_only_fields = ['created_by']
 # ----------------------------------------------------------------
 class RegisterSystemsSerializer(serializers.ModelSerializer):

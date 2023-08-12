@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-elzammuv+53y3=v28dyx3q)9gwv!^tzc=nuy__d&4vk&f9(ilz
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'djangoschnell.wsgi.application'
 DATABASES = {
     'default': {
     'ENGINE': 'django.db.backends.postgresql',
-    'NAME': 'sidbar_db2',
+    'NAME': 'Db5',
     'USER': 'postgres',
     # 'PASSWORD': get_secrets('DB_PASSWORD'),
     'PASSWORD': '1234',
@@ -162,9 +162,24 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000',
-    'http://localhost:3001',
-]
+# CORS_ORIGIN_WHITELIST = [
+#     'http://localhost:3000',
+#     'http://localhost:3001',
+#     'http://localhost:3002'
+# ]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = (
+#     'http://localhost:3000',
+   
+# )
+STATIC_ROOT = 'staticfiles'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
+STATICFILES_DIR = {
+    os.path.join(BASE_DIR , "public/static")
+}
+
+MEDIA_ROOT =  os.path.join(BASE_DIR, 'public/static') 
+MEDIA_URL = '/media/'
 

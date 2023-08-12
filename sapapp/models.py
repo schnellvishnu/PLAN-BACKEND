@@ -172,6 +172,7 @@ class Sapproductionorder(models.Model):
     model_name = models.CharField(max_length=50,null=True,blank=True)
     stock_quantity= models.CharField(max_length=50,null=True)
     shipped= models.CharField(max_length=50,null=True)
+    imn=models.CharField(max_length=100,unique=True)
 
     def __str__(self):
         return self.manufacturing_location

@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<som:SOMSalesShipmentMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cmn="urn:tracelink:mapper:sl:commontypes" xmlns:som="urn:tracelink:mapper:sl:serialized_operations_manager" xmlns="urn:tracelink:mapper:sl:serialized_operations_manager">
+  <som:ControlFileHeader>
+    <cmn:FileSenderNumber>uk</cmn:FileSenderNumber>
+    <cmn:FileReceiverNumber>774349876</cmn:FileReceiverNumber>
+    <cmn:FileControlNumber>65656</cmn:FileControlNumber>
+    <cmn:FileDate>2023-09-08</cmn:FileDate>
+    <cmn:FileTime>16:30:00</cmn:FileTime>
+  </som:ControlFileHeader>
+  <som:MessageBody>
+    <cmn:DeliveryNumber>kjkjl</cmn:DeliveryNumber>
+    <cmn:DeliveryCompleteFlag>true</cmn:DeliveryCompleteFlag>
+    <som:OrderDetails>
+      <cmn:TransactionIdentifier type="PO">40</cmn:TransactionIdentifier>
+      <cmn:TransactionIdentifier type="ASN">kjkjl</cmn:TransactionIdentifier>
+      <cmn:TransactionDate>2023-08-09</cmn:TransactionDate>
+      <cmn:TransactionTime>12:33</cmn:TransactionTime>
+      <cmn:ShipFromCountryCode>dfgfg<cmn:ExpirationDate>2025-12-31</cmn:ExpirationDate>
+      </cmn:ShipFromCountryCode>
+      <cmn:ShipToCountryCode>fgrfdt</cmn:ShipToCountryCode>
+      <cmn:SalesDistributionType>dfd</cmn:SalesDistributionType>
+      <cmn:OrderItemList>
+        <cmn:OrderItem>
+          <cmn:InternalMaterialCode>2345525</cmn:InternalMaterialCode>
+          <cmn:LotNumber>kjkjl</cmn:LotNumber>
+          <cmn:Quantity>2234</cmn:Quantity>
+        </cmn:OrderItem>
+      </cmn:OrderItemList>
+      <cmn:SenderInfo>
+        <cmn:FromBusinessPartyInfo>
+          <cmn:BusinessId type="GLN">774349876</cmn:BusinessId>
+          <cmn:BusinessInfo>
+            <cmn:BusinessName>schnell</cmn:BusinessName>
+            <cmn:Street1>street</cmn:Street1>
+            <cmn:City>holsnew</cmn:City>
+            <cmn:StateOrRegion>melbern</cmn:StateOrRegion>
+            <cmn:PostalCode>jdw</cmn:PostalCode>
+            <cmn:Country>Australia</cmn:Country>
+          </cmn:BusinessInfo>
+        </cmn:FromBusinessPartyInfo>
+        <cmn:ShipFromLocationInfo>
+          <cmn:FacilityId type="GLN">6656</cmn:FacilityId>
+          <cmn:FacilityId type="SGLN">None</cmn:FacilityId>
+          <cmn:LocationInfo>
+            <cmn:BusinessName>uk</cmn:BusinessName>
+            <cmn:Street1>uk plwoytui</cmn:Street1>
+            <cmn:City />
+            <cmn:StateOrRegion>gt</cmn:StateOrRegion>
+            <cmn:PostalCode>34345</cmn:PostalCode>
+            <cmn:District>None</cmn:District>
+            <cmn:Country />
+          </cmn:LocationInfo>
+        </cmn:ShipFromLocationInfo>
+      </cmn:SenderInfo>
+      <cmn:ReceiverInfo>
+        <cmn:ToBusinessPartyLookupId type="GLN">None</cmn:ToBusinessPartyLookupId>
+        <cmn:ShipToLocationLookupId type="COMPANYSITEID">None</cmn:ShipToLocationLookupId>
+      </cmn:ReceiverInfo>
+    </som:OrderDetails>
+    <som:AddPickedLot>
+      <cmn:ProductLotNumbers>
+        <cmn:InternalMaterialCode>2345525</cmn:InternalMaterialCode>
+        <cmn:LotNumber>kjkjl</cmn:LotNumber>
+      </cmn:ProductLotNumbers>
+    </som:AddPickedLot>
+  </som:MessageBody>
+</som:SOMSalesShipmentMessage>

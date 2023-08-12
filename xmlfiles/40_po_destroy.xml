@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<snx:SNXDispositionUpdatedMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cmn="urn:tracelink:mapper:sl:commontypes" xmlns:snx="urn:tracelink:mapper:sl:serial_number_exchange" xmlns="urn:tracelink:mapper:sl:serial_number_exchange">
+  <snx:ControlFileHeader>
+    <cmn:FileSenderNumber>656</cmn:FileSenderNumber>
+    <cmn:FileReceiverNumber>565</cmn:FileReceiverNumber>
+    <cmn:FileControlNumber>55</cmn:FileControlNumber>
+    <cmn:FileDate>2023-08-17</cmn:FileDate>
+    <cmn:FileTime>11:05</cmn:FileTime>
+  </snx:ControlFileHeader>
+  <snx:MessageBody>
+    <cmn:EventDateTime>11:05</cmn:EventDateTime>
+    <cmn:EventTimeZoneOffset>656</cmn:EventTimeZoneOffset>
+    <snx:SerialNumbers>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+      <cmn:Serial>54465656</cmn:Serial>
+    </snx:SerialNumbers>
+    <cmn:PackagingSerialNumberStatus>destroyed</cmn:PackagingSerialNumberStatus>
+    <cmn:ItemAttribute />
+    <cmn:EventLocation>gfh</cmn:EventLocation>
+    <cmn:ReasonDescription>gh</cmn:ReasonDescription>
+  </snx:MessageBody>
+</snx:SNXDispositionUpdatedMessage>

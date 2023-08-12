@@ -27,7 +27,7 @@ class RegisteredSystem(models.Model):
         constraints = [
         models.UniqueConstraint(fields=['manufacturinglocation_id','name'], name='oneproline')
     ]
-    id = models.AutoField(primary_key=True)
+    id= models.AutoField(primary_key=True)
     manufacturinglocation_id = models.ForeignKey(ManufacturingLocations,related_name='manufactorlocation_to_productionline',on_delete=models.CASCADE)
     ip_address = models.CharField(max_length=40,unique=True)
     type = models.CharField(max_length=20,choices=system_type_choices)

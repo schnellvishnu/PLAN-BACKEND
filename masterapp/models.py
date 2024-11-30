@@ -73,6 +73,8 @@ class Company(models.Model):
     sap_sytem_number =models.CharField(max_length=100,null=True,blank=True)
     sap_user =models.CharField(max_length=100,null=True,blank=True)
     
+    companyflag=models.BooleanField(default=False,null=True)
+    
     
     
     
@@ -84,8 +86,8 @@ class Customers(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=40)
     created_by = models.CharField(max_length =100)
-    company_prefix  = models.CharField(max_length=20)
-    company_gln  = models.CharField(max_length=20)
+    company_prefix  = models.CharField(max_length=20,null=True)
+    company_gln  = models.CharField(max_length=20,null=True)
     description = models.TextField()
     address = models.CharField(max_length=100)
     country = models.CharField(max_length=20)
@@ -114,6 +116,8 @@ class Customers(models.Model):
     sftp_host=models.CharField(max_length=100,null=True)
     sftp_username=models.CharField(max_length=100,default=True)
     file_receiver=models.CharField(max_length=100,null=True)
+    
+    customerflag=models.BooleanField(default=False,null=True)
 
     def __str__(self):
         return self.name
@@ -138,6 +142,8 @@ class Locations(models.Model):
     ship_to_locationlookup_id=models.CharField(max_length=100,null=True)
     tracelink_file_sender=models.CharField(max_length=100,null=True)
     sgln_extension=models.CharField(max_length=100,null=True) 
+    
+    locationflag=models.BooleanField(default=False,null=True)
 
     # history =  HistoricalRecords()
 
@@ -204,6 +210,7 @@ class Product(models.Model):
     
     markets = models.JSONField(blank=True, default="[{\"markets_name\":\"India\",\"checkedStatus\":false}]")
     
+    productflag=models.BooleanField(default=False,null=True)
     
    
     def __str__(self):
@@ -214,7 +221,7 @@ class Markets(models.Model):
      markets_name=models.CharField(max_length=100,unique=True)
      
      def __str__(self):
-         return self.markets_name                       
+         return self.markets_name                      
     
 class ProductionOrder(models.Model):
                         
@@ -254,7 +261,7 @@ class ProductionOrder(models.Model):
     Markets=models.CharField(max_length=100,null=True,blank=True)
     country=models.CharField(max_length=100,null=True,blank=True)
     email = models.EmailField(null=True)
-    Barcodetypename = models.CharField(max_length=20, unique= True, null=True)
+    Barcodetypename = models.CharField(max_length=20, null=True)
     model_name = models.CharField(max_length=50,null=True,blank=True)
     stock_quantity= models.CharField(max_length=50,null=True)
     shipped= models.CharField(max_length=50,null=True)
@@ -288,6 +295,8 @@ class ProductionOrder(models.Model):
     Packet_type = models.CharField(max_length=100,null=True,blank=True)
     Revision_Number = models.CharField(max_length=100,null=True,blank=True)
     PT_Aim_Number = models.CharField(max_length=100,null=True,blank=True)
+
+    available_quantity=models.CharField(max_length=20,null=True,default=False)
     
     # hrf1=models.JSONField(default={'null':'null'})
     # hrf2=models.JSONField(default={'null':'null'})
@@ -295,11 +304,12 @@ class ProductionOrder(models.Model):
     # hrf4=models.JSONField(default={'null':'null'})
     # hrf5=models.JSONField(default={'null':'null'})
     # hrf6=models.JSONField(default={'null':'null'})
-    hrf= models.JSONField(max_length=200,null=True,blank=True)
+    hrf= models.JSONField(default="null")
     
-    
-    def __str__(self):
-        return self.manufacturing_location     
+    prodcutionorderflag=models.BooleanField(default=False,null=True)
+    balanceflag=models.CharField(max_length=100,null=True,blank=True)
+    shippingflag=models.BooleanField(default=False,null=True)
+    btncontrollstatus=models.CharField(max_length=20, default="Not Downloaded")
 
 class ShipPO(models.Model):
     id = models.AutoField(primary_key=True)
@@ -325,6 +335,8 @@ class ShipPO(models.Model):
     delivary_number = models.CharField(max_length=100,null=True,blank=True)
     advance_ship_notice = models.CharField(max_length=100,null=True,blank=True)
     process_no_original=models.IntegerField(null=True)
+    
+    shippoflag=models.BooleanField(default=False,null=True)
 
     def __str__(self) :
         return self.shipping_order_name
@@ -351,7 +363,7 @@ class SnProvider(models.Model):
     def __str__(self) -> str:
         return self.name
     
-# class Tracelinksettings(models.Model):
+#  class Tracelinksettings(models.Model):
 #       id=models.AutoField(primary_key=True)
 #       title=models.CharField(max_length=100,null=True)
 #       url=models.URLField(null=True)
@@ -401,7 +413,7 @@ class Stock(models.Model):
 #         return self.erp
     
 # class Gtins(models.Model):
-#                         # pro_details_gtin = models.ForeignKey(Product,related_name='product_to_gtins',on_delete=models.CASCADE)    
+#     # pro_details_gtin = models.ForeignKey(Product,related_name='product_to_gtins',on_delete=models.CASCADE)    
 #     # Snum_Provider_id = models.ForeignKey(SnProvider,related_name='snprovider_to_gtins',on_delete=models.CASCADE)
    
 #     gtin = models.ForeignKey(Product, on_delete= models.CASCADE)
@@ -422,16 +434,16 @@ class Stock(models.Model):
 #         return str(self.gtin)
     
 class Gtins(models.Model):
-                        # pro_details_gtin = models.ForeignKey(Product,related_name='product_to_gtins',on_delete=models.CASCADE)    
+    # pro_details_gtin = models.ForeignKey(Product,related_name='product_to_gtins',on_delete=models.CASCADE)    
     # Snum_Provider_id = models.ForeignKey(SnProvider,related_name='snprovider_to_gtins',on_delete=models.CASCADE)
    
     # gtin = models.ForeignKey(Product, on_delete= models.CASCADE)
-    gtin=models.CharField(max_length=100,unique= True,null=True)
+    gtin=models.CharField(max_length=100,unique=True,null=True)
     
     available_quantity = models.PositiveIntegerField(default=0)
     
-    minimum_quantity = models.PositiveIntegerField()
-    renewal_quantity = models.PositiveIntegerField()
+    # minimum_quantity = models.PositiveIntegerField()
+    # renewal_quantity = models.PositiveIntegerField()
     '''locked becomes True when deleting the gtin only developer can change back to false'''
     # locked = models.BooleanField(default=False)
     last_log = models.DateTimeField(auto_now=True)
@@ -441,8 +453,8 @@ class Gtins(models.Model):
     created_by = models.CharField(max_length =100)
     status= models.BooleanField(default=False)
     #numbers=models.TextField(max_length=10000,default=True)
-    numbers=models.JSONField(max_length=200,null=True,blank=True)
-    snnumbers=models.CharField(max_length=100,default=True)
+    # numbers=models.JSONField(max_length=200,null=True,blank=True)
+    # snnumbers=models.CharField(max_length=100,default=True)
     
    
 
@@ -462,13 +474,30 @@ class PrinterdataTable(models.Model):
         
         expiration_date = models.DateField(null=True)
         # gtin = models.ForeignKey(Gtins, on_delete= models.CASCADE)
-        lot=models.CharField(max_length=100,null=True)
-        gtin=models.CharField(max_length=100,unique= True,null=True)
+        lot=models.CharField(max_length=100,null=True,unique=True)
+        gtin=models.CharField(max_length=100,null=True)
         numbers=models.JSONField(null=True,blank=True)
         quantity= models.CharField(max_length=20,null=True)
         hrf= models.JSONField(null=True,blank=True)
         type=models.CharField(max_length=100,null=True)
-        
+        status=models.CharField(max_length=100,default="Not Print")
+        ip_address=models.CharField(max_length=100,null=True)
+        printed_numbers=models.JSONField(null=True)
+        balanced_serialnumbers=models.JSONField(null=True)
+        responsefield=models.BooleanField(default=False)
+        preparebuttonresponse=models.BooleanField(null=True,default=False)
+        stopbtnresponse=models.BooleanField(default=False)
+        start_pause_btnresponse=models.BooleanField(default=False)
+        pause_stop_btnresponse=models.BooleanField(default=False)
+        return_slno_btn_response=models.BooleanField(default=False)
+        batchstopmessage=models.BooleanField(default=False)
+        label_response=models.CharField(max_length=100,null=True)
+        child_numbers=models.JSONField(null=True,blank=True)
+        scannergradefield=models.JSONField(null=True,blank=True)
+        loadpause=models.BooleanField(default=False)
+        Rejectednumbers=models.JSONField(null=True,blank=True)
+        acceptednumbers=models.JSONField(null=True,blank=True)
+        jobstatus=models.CharField(max_length=100,default="Not Added")
         
         def __str__(self):
                 return str(self. id)
@@ -476,6 +505,97 @@ class PrinterdataTable(models.Model):
 class Downloadcodes(models.Model):
     id=models.AutoField(primary_key=True)
     process_order_number = models.CharField(max_length= 20, unique= True,null=True)
+    batch_number = models.CharField(max_length=20,unique=True,null=True,blank=True)
     serialnumberwithgtin=models.JSONField(null=True,blank=True) 
     def __str__(self):
             return str(self. id)  
+
+
+class ScannerTable(models.Model):
+                    id=models.AutoField(primary_key=True)
+                    # processordernumber=models.CharField(max_length=100,unique= True)
+                    gtin=models.CharField(max_length=100,null=True)
+                    numbers=models.JSONField(null=True,blank=True)
+                    type=models.CharField(max_length=100,null=True)
+                    ip_address=models.CharField(max_length=100,null=True)
+                    grade = models.JSONField(blank=True, default="[{\"serialnumber\":\"grade\"}]")
+                    status=models.CharField(max_length=100,null=True)
+                    serialnumber=models.CharField(max_length=100,null=True)
+                    gradevalue=models.CharField(max_length=100,null=True)
+                    lot=models.CharField(max_length=100,null=True)
+                    finalstatus=models.CharField(max_length=100,null=True)
+                    
+                    
+                    def __str__(self):
+                        return str(self. id)
+class ReworkTable(models.Model):
+                    id=models.AutoField(primary_key=True)
+                    # processordernumber=models.CharField(max_length=100,unique= True)
+                    gtin=models.CharField(max_length=100,null=True)
+                    slnonumber=models.CharField(max_length=100,null=True)
+                    
+                    oldstatus = models.CharField(max_length=100,null=True)
+                    newstatus=models.CharField(max_length=100,null=True)
+                    def __str__(self):
+                        return str(self.id)
+class ProdReport(models.Model):
+    id = models.AutoField(primary_key=True)
+    process_order_number = models.CharField(max_length=100, default="process order number")
+    batch_number = models.CharField(max_length=100, default="batch number",unique=True)
+    product_name = models.CharField(max_length=100, default="product name")
+    manufacture_loc_name = models.CharField(max_length=100, default="manufacture location name")
+    
+    line_name = models.CharField(max_length=100, default="line name")
+    production_date = models.DateField(null=True)
+    production_time=models.TimeField(null=True)
+    system_name = models.CharField(max_length=100, default="system name")
+    created_by = models.CharField(max_length=100, default="created by")
+    created_at = models.DateField(null=True)
+    updated_at = models.DateField(null=True)
+    accepted=models.IntegerField(default=0)
+    specimen=models.IntegerField(default=0)
+    damaged=models.IntegerField(default=0)
+    sample=models.IntegerField(default=0)
+    challenged=models.IntegerField(default=0)
+    teach=models.IntegerField(default=0)
+    inprocess=models.IntegerField(default=0)
+    rejectedbycamera=models.IntegerField(default=0)
+    unused=models.IntegerField(default=0)
+   
+    ip_address=models.CharField(max_length=100,null=True)
+    gtin=models.CharField(max_length=100,null=True)
+    expiration_date = models.DateField(null=True) 
+    type=models.CharField(max_length=100,null=True)             
+    numbers=models.IntegerField(null=True,blank=True)
+
+    acceptedcount=models.IntegerField(default=0)
+    specimencount=models.IntegerField(default=0)
+    damagedcount=models.IntegerField(default=0)
+    samplecount=models.IntegerField(default=0)
+    challengedcount=models.IntegerField(default=0)
+    teachcount=models.IntegerField(default=0)
+    inprocesscount=models.IntegerField(default=0)
+    rejectedbycameracount=models.IntegerField(default=0)
+    unusedcount=models.IntegerField(default=0)
+    current_production_date =models.DateField(null=True)
+    current_production_time=models.TimeField(null=True)
+    
+    def __str__(self):
+        return self.batch_number
+
+class Allocatednumbers(models.Model):
+    id = models.AutoField(primary_key=True)                     
+    batch_number = models.CharField(max_length=20,unique=True)
+    process_order_number = models.CharField(max_length= 20, unique= True) 
+    gtin_number = models.CharField(max_length=20,null=True,blank=True)             
+    available_quantity=models.CharField(max_length=20,null=True,default=False)                    
+    quantity= models.CharField(max_length=20,null=True)
+    created_by = models.CharField(max_length =100,default=False)
+    
+    def __str__(self):
+        return self.process_order_number
+            
+
+                        
+                        
+    

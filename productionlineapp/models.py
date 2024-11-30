@@ -16,34 +16,41 @@ class ManufacturingLocations(models.Model):
     updated_at = models.DateTimeField(auto_now=True)    
     created_by = models.CharField(max_length =100)
     status = models.BooleanField(default=False)
+    
+    manufacturingLocationflag=models.BooleanField(default=False,null=True)
   
 
     def __str__(self):
         return self.name or ' '
 # ----------------------------------------------------------
 class RegisteredSystem(models.Model):
-    class Meta:
-        db_table = 'RegisteredSystem'
-        constraints = [
-        models.UniqueConstraint(fields=['manufacturinglocation_id','name'], name='oneproline')
-    ]
+    # class Meta:
+    #     db_table = 'RegisteredSystem'
+    #     constraints = [
+    #     models.UniqueConstraint(fields=['manufacturinglocation_id','name'], name='oneproline')
+    # ]
     id= models.AutoField(primary_key=True)
-    manufacturinglocation_id = models.ForeignKey(ManufacturingLocations,related_name='manufactorlocation_to_productionline',on_delete=models.CASCADE)
+    manufacturinglocation_id = models.ForeignKey(ManufacturingLocations,related_name='manufactorlocation_to_productionline',on_delete=models.CASCADE,unique=True)
     ip_address = models.CharField(max_length=40,unique=True)
     type = models.CharField(max_length=20,choices=system_type_choices)
-    system_name = models.CharField(max_length=40) 
-    line = models.CharField(max_length=20)
+    system_name = models.CharField(max_length=40,unique=True) 
+    line = models.CharField(max_length=20,unique=True)
     level = models.CharField(max_length=20)
     name = models.CharField(max_length=20)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.CharField(max_length =100)
     status = models.BooleanField(default=False)
+    
+    productionlineflag=models.BooleanField(default=False,null=True)
+    
+    
 
    
 
     def __str__(self):
-        return self.name or ''
+        return self.system_name 
+    
 #---------------------------------------------------------
 
 class Task(models.Model)   :

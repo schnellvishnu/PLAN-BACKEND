@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-from accounts.models import  UserRole,AuditLog,Register,History,UserrolePermissions,UserAuditHistoryOnly
-from accounts.serializers import UserRoleSerializer,HistorySerializer,RegisterSerializer,UserrolePermissionsSerializer,UserHistorySerializer
+from accounts.models import  UserRole,AuditLog,Register,History,UserrolePermissions,UserAuditHistoryOnly,Loginmodel
+from accounts.serializers import UserRoleSerializer,HistorySerializer,RegisterSerializer,UserrolePermissionsSerializer,UserHistorySerializer,LoginModelSerializer
 # from masterapp.permissions import ObjectDestroyPermission, Productpermission
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -369,7 +369,11 @@ class logoutController(APIView):
         return Response(200)
 class userPermissionEdit(APIView):
     def post(self, request):
-
+        # print(request.data['userrole'])
+        # print(request.data['Applicationserver_Changepassword_read'])
+        # print(request.data['Applicationserver_Changepassword_create'])
+        # print(request.data['Applicationserver_Changepassword_update'])
+        # print(request.data['Applicationserver_Changepassword_delete'])
         Registeredusers_json = {
             'READ': request.data['Registeredusers_read'], 
             'CREATE':request.data['Registeredusers_create'], 
@@ -480,6 +484,13 @@ class userPermissionEdit(APIView):
             'DELETE':request.data['Shippingreport_delete']
         }
         
+        Productionreport_json = {
+            'READ': request.data['Productionreport_read'], 
+            'CREATE':request.data['Productionreport_create'], 
+            'UPDATE': request.data['Productionreport_update'],
+            'DELETE':request.data['Productionreport_delete']
+        }
+        
         
         PrinterPool_json = {
             'READ': request.data['Printerpool_read'], 
@@ -488,7 +499,76 @@ class userPermissionEdit(APIView):
             'DELETE':request.data['Printerpool_delete']
         }
         
-         
+        Applicationserver_Changepassword_json = {
+            'READ': request.data['Applicationserver_Changepassword_read'], 
+            'CREATE':request.data['Applicationserver_Changepassword_create'], 
+            'UPDATE': request.data['Applicationserver_Changepassword_update'],
+            'DELETE':request.data['Applicationserver_Changepassword_delete']
+        }
+        
+        Inspectiondashboard_json = {
+            'READ': request.data['Inspectiondashboard_read'], 
+              
+        }
+        Rework_json = {
+            'READ': request.data['Rework_read'],
+            'CREATE':request.data['Rework_create'],  
+            'DELETE':request.data['Rework_delete']
+        }
+        Applicationserver_History_json = {
+            'READ': request.data['Applicationserver_History_read'], 
+            'DELETE': request.data['Applicationserver_History_delete'], 
+           
+        }
+        Applicationserver_Backup_json = {
+            'READ': request.data['Applicationserver_Backup_read'], 
+            'CREATE':request.data['Applicationserver_Backup_create'], 
+            'UPDATE': request.data['Applicationserver_Backup_update'],
+            'DELETE': request.data['Applicationserver_Backup_delete'],   
+        }
+        Manualupload_json = {
+            'READ': request.data['Manualupload_read'], 
+            'CREATE':request.data['Manualupload_create'], 
+            'UPDATE': request.data['Manualupload_update'],
+            'DELETE': request.data['Manualupload_delete'], 
+           
+        }
+        Applicationserver_reports_json = {
+            'READ': request.data['Applicationserver_reports_read'], 
+              
+        }
+        Printerjobs_json = {
+            'READ': request.data['Printerjobs_read'], 
+            'CREATE':request.data['Printerjobs_create'], 
+            'UPDATE': request.data['Printerjobs_update'],
+            'DELETE': request.data['Printerjobs_delete'], 
+           
+        }
+        Scannerjobs_json = {
+            'READ': request.data['Scannerjobs_read'], 
+              
+        }
+        
+        Sapdata_json = {
+            'READ': request.data['Sapdata_read'], 
+            'CREATE':request.data['Sapdata_create'], 
+            'UPDATE': request.data['Sapdata_update'],
+            'DELETE': request.data['Sapdata_delete'], 
+           
+        }
+        
+        Trash_json = {
+            'READ': request.data['Trash_read'], 
+            
+            'DELETE': request.data['Trash_delete'], 
+           
+        }
+        
+        
+
+        
+      
+        
         if(request.data['userrole']=='admin'):
             userrole = UserrolePermissions.objects.get(activity_name = 'registeredUsers')
             userrole.admin = Registeredusers_json
@@ -564,6 +644,56 @@ class userPermissionEdit(APIView):
             userrole=UserrolePermissions.objects.get(activity_name='shippingreport')
             userrole.admin=Shippingreport_json
             userrole.save()
+            
+            userrole=UserrolePermissions.objects.get(activity_name='productionreport')
+            userrole.admin=Productionreport_json
+            userrole.save()
+            
+            
+            userrole=UserrolePermissions.objects.get(activity_name='applicationchangepassword')
+            userrole.admin=Applicationserver_Changepassword_json
+            userrole.save()
+            
+            inspectiondashboard = UserrolePermissions.objects.get(activity_name='inspectiondashboard')
+            inspectiondashboard.admin = Inspectiondashboard_json
+            inspectiondashboard.save() 
+            
+            rework = UserrolePermissions.objects.get(activity_name='rework')
+            rework.admin = Rework_json  
+            rework.save()
+            
+            applicationserverhistory = UserrolePermissions.objects.get(activity_name='applicationserverhistory')
+            applicationserverhistory.admin = Applicationserver_History_json
+            applicationserverhistory.save()
+            
+            applicationserverbackup = UserrolePermissions.objects.get(activity_name='applicationserverbackup')
+            applicationserverbackup.admin = Applicationserver_Backup_json
+            applicationserverbackup.save()
+            
+            manualupload = UserrolePermissions.objects.get(activity_name='manualupload')
+            manualupload.admin =  Manualupload_json 
+            manualupload.save()
+            
+            applicationserverreport = UserrolePermissions.objects.get(activity_name='applicationserverreport')
+            applicationserverreport.admin =  Applicationserver_reports_json 
+            applicationserverreport.save()
+            
+            printerjobs = UserrolePermissions.objects.get(activity_name='printerjobs')
+            printerjobs.admin =   Printerjobs_json
+            printerjobs.save()
+            
+            scannerjobs = UserrolePermissions.objects.get(activity_name='scannerjobs')
+            scannerjobs.admin =  Scannerjobs_json
+            scannerjobs.save()
+            
+            sapdata = UserrolePermissions.objects.get(activity_name='sapdata')
+            sapdata.admin = Sapdata_json
+            sapdata.save()
+            
+            trashdata = UserrolePermissions.objects.get(activity_name='trash')
+            trashdata.admin = Trash_json
+            trashdata.save()
+            
             
             
             
@@ -645,6 +775,55 @@ class userPermissionEdit(APIView):
             userrole=UserrolePermissions.objects.get(activity_name='shippingreport')
             userrole.masterdata=Shippingreport_json
             userrole.save()
+            
+            userrole=UserrolePermissions.objects.get(activity_name='productionreport')
+            userrole.masterdata=Productionreport_json
+            userrole.save()
+            
+                        
+            userrole=UserrolePermissions.objects.get(activity_name='applicationchangepassword')
+            userrole.masterdata=Applicationserver_Changepassword_json
+            userrole.save()
+            
+            inspectiondashboard = UserrolePermissions.objects.get(activity_name='inspectiondashboard')
+            inspectiondashboard.masterdata = Inspectiondashboard_json
+            inspectiondashboard.save()
+            
+            rework = UserrolePermissions.objects.get(activity_name='rework')
+            rework.masterdata = Rework_json
+            rework.save()
+            
+            applicationserverhistory = UserrolePermissions.objects.get(activity_name='applicationserverhistory')
+            applicationserverhistory.masterdata = Applicationserver_History_json
+            applicationserverhistory.save()
+            
+            applicationserverbackup = UserrolePermissions.objects.get(activity_name='applicationserverbackup')
+            applicationserverbackup.masterdata = Applicationserver_Backup_json
+            applicationserverbackup.save()
+            
+            manualupload = UserrolePermissions.objects.get(activity_name='manualupload')
+            manualupload.masterdata=  Manualupload_json 
+            manualupload.save()
+            
+            applicationserverreport = UserrolePermissions.objects.get(activity_name='applicationserverreport')
+            applicationserverreport.masterdata =  Applicationserver_reports_json 
+            applicationserverreport.save()
+            
+            printerjobs = UserrolePermissions.objects.get(activity_name='printerjobs')
+            printerjobs.masterdata =   Printerjobs_json
+            printerjobs.save()
+            
+            scannerjobs = UserrolePermissions.objects.get(activity_name='scannerjobs')
+            scannerjobs.masterdata = Scannerjobs_json
+            scannerjobs.save()
+            
+            sapdata = UserrolePermissions.objects.get(activity_name='sapdata')
+            sapdata.masterdata = Sapdata_json
+            sapdata.save()
+            
+            trashdata = UserrolePermissions.objects.get(activity_name='trash')
+            trashdata.masterdata = Trash_json
+            trashdata.save()
             
            
             
@@ -733,6 +912,53 @@ class userPermissionEdit(APIView):
             userrole.save()
             
             
+            userrole=UserrolePermissions.objects.get(activity_name='productionreport')
+            userrole.supervisor=Productionreport_json
+            userrole.save()
+            
+            userrole=UserrolePermissions.objects.get(activity_name='applicationchangepassword')
+            userrole.supervisor=Applicationserver_Changepassword_json
+            userrole.save()
+            
+            inspectiondashboard = UserrolePermissions.objects.get(activity_name='inspectiondashboard')
+            inspectiondashboard.supervisor = Inspectiondashboard_json
+            inspectiondashboard.save()
+            
+            rework = UserrolePermissions.objects.get(activity_name='rework')
+            rework.supervisor = Rework_json
+            rework.save()
+            
+            applicationserverhistory = UserrolePermissions.objects.get(activity_name='applicationserverhistory')
+            applicationserverhistory.supervisor = Applicationserver_History_json
+            applicationserverhistory.save()
+            
+            applicationserverbackup = UserrolePermissions.objects.get(activity_name='applicationserverbackup')
+            applicationserverbackup.supervisor = Applicationserver_Backup_json
+            applicationserverbackup.save()
+            
+            manualupload = UserrolePermissions.objects.get(activity_name='manualupload')
+            manualupload.supervisor =  Manualupload_json 
+            manualupload.save()
+            
+            applicationserverreport = UserrolePermissions.objects.get(activity_name='applicationserverreport')
+            applicationserverreport.supervisor =  Applicationserver_reports_json 
+            applicationserverreport.save()
+            
+            printerjobs = UserrolePermissions.objects.get(activity_name='printerjobs')
+            printerjobs.supervisor=   Printerjobs_json
+            printerjobs.save()
+            
+            scannerjobs = UserrolePermissions.objects.get(activity_name='scannerjobs')
+            scannerjobs.supervisor =   Scannerjobs_json
+            scannerjobs.save()
+            
+            sapdata = UserrolePermissions.objects.get(activity_name='sapdata')
+            sapdata.supervisor =   Sapdata_json
+            sapdata.save()
+            
+            trashdata = UserrolePermissions.objects.get(activity_name='trash')
+            trashdata.supervisor = Trash_json
+            trashdata.save()
             
             return Response(200)
         elif(request.data['userrole']=='operator'):
@@ -797,7 +1023,7 @@ class userPermissionEdit(APIView):
             userrole.operator=GtinPool_json
             userrole.save()
             
-            userrole=UserrolePermissions.objects.get(activity_name="printrpool")
+            userrole=UserrolePermissions.objects.get(activity_name="printerpool")
             userrole.operator=PrinterPool_json
             userrole.save()
             
@@ -809,6 +1035,54 @@ class userPermissionEdit(APIView):
             userrole.operator=Shippingreport_json
             userrole.save()
             
+            userrole=UserrolePermissions.objects.get(activity_name='productionreport')
+            userrole.operator=Productionreport_json
+            userrole.save()
+            
+            
+            userrole = UserrolePermissions.objects.get(activity_name = 'applicationchangepassword')
+            userrole.operator = Applicationserver_Changepassword_json
+            userrole.save()
+            
+            inspectiondashboard = UserrolePermissions.objects.get(activity_name='inspectiondashboard')
+            inspectiondashboard.operator = Inspectiondashboard_json
+            inspectiondashboard.save()
+            
+            rework = UserrolePermissions.objects.get(activity_name='rework')
+            rework.operator = Rework_json
+            rework.save()
+            
+            applicationserverhistory = UserrolePermissions.objects.get(activity_name='applicationserverhistory')
+            applicationserverhistory.operator= Applicationserver_History_json
+            applicationserverhistory.save()
+            
+            applicationserverbackup = UserrolePermissions.objects.get(activity_name='applicationserverbackup')
+            applicationserverbackup.operator = Applicationserver_Backup_json
+            applicationserverbackup.save()
+            
+            manualupload = UserrolePermissions.objects.get(activity_name='manualupload')
+            manualupload.operator =  Manualupload_json 
+            manualupload.save()
+            
+            applicationserverreport = UserrolePermissions.objects.get(activity_name='applicationserverreport')
+            applicationserverreport.operator =  Applicationserver_reports_json 
+            applicationserverreport.save()
+            
+            printerjobs = UserrolePermissions.objects.get(activity_name='printerjobs')
+            printerjobs.operator =   Printerjobs_json
+            printerjobs.save()
+            
+            scannerjobs = UserrolePermissions.objects.get(activity_name='scannerjobs')
+            scannerjobs.operator =   Scannerjobs_json
+            scannerjobs.save()
+            
+            sapdata = UserrolePermissions.objects.get(activity_name='sapdata')
+            sapdata.operator = Sapdata_json
+            sapdata.save()
+            
+            trashdata = UserrolePermissions.objects.get(activity_name='trash')
+            trashdata.operator = Trash_json
+            trashdata.save()
             
             return Response(200)
       
@@ -819,3 +1093,116 @@ class UserrolePermissionsRead(APIView):
         serializeObj = UserrolePermissionsSerializer(detailsObj, many = True)
         return Response(serializeObj.data)
     
+# ..............................................................................
+# BACKUP DATA CODE 
+class TrashHistory(APIView):
+    def delete(self, request, pk):
+        # name=request.data['Name']
+        try:
+            detailsObj =History.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = History.objects.all().filter(id=pk)
+        detailObj=History.objects.filter(id=pk).update(historyflag=True)
+      
+       
+        historySave = History(modelname='history',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the history by " +  request.data["savedid"] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashHistory(APIView):
+    def delete(self, request, pk):
+        
+        try:
+            detailsObj = History.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = History.objects.all().filter(id=pk)
+        detailObj=History.objects.filter(id=pk).update(historyflag=False)
+       
+       
+        historySave = History(modelname='history',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the history by " + request.data["savedid"] + " from trash")
+        historySave.save()
+        return Response(200) 
+    
+class TrashUser(APIView):
+    def delete(self, request, pk):
+        name=request.data['Name']
+        try:
+            detailsObj =Register.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Register.objects.all().filter(id=pk)
+        detailObj=Register.objects.filter(id=pk).update(registerflag=True)
+      
+       
+        historySave = History(modelname='register',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the user " +  name +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashUser(APIView):
+    def delete(self, request, pk):
+        name=request.data['Name']
+        try:
+            detailsObj = Register.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Register.objects.all().filter(id=pk)
+        detailObj=Register.objects.filter(id=pk).update(registerflag=False)
+       
+       
+        historySave = History(modelname='register',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the user " + name +" from trash")
+        historySave.save()
+        return Response(200)
+    
+    # ....................................................................
+class LoginModelView(APIView):
+    def get(self, request):
+        detailsObj = Loginmodel.objects.all()
+        serializeObj = LoginModelSerializer(detailsObj, many = True)
+        return Response(serializeObj.data)
+
+   
+    def post(self, request):
+        serializeObj = LoginModelSerializer(data=request.data)
+        if serializeObj.is_valid():
+            serializeObj.save()
+            return Response(200)
+        return Response(serializeObj.errors)
+
+class updateLoginModel(APIView):
+    def put(self, request, pk):
+        try:
+            detailObj = Loginmodel.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+
+        serializeObj = LoginModelSerializer(detailObj, data=request.data)
+        if serializeObj.is_valid():
+            serializeObj.save()
+            return Response(200)
+        return Response(serializeObj.errors)      

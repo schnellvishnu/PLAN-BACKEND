@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from rest_framework import status
 from django.core.exceptions import ObjectDoesNotExist
-
+import socket
 class ProductionOrderReport(APIView):
     def get(self, request):
         detailsObj = ProductionReport.objects.all()
@@ -75,3 +75,10 @@ class ProductionOrderReportdate(APIView):
             
             
         # return Response(200)
+class Printeripview(APIView):
+        def get(self,request):
+              hostname = socket.gethostname()
+              IPAddr = socket.gethostbyname(hostname)
+              print(IPAddr)
+              
+              return Response(IPAddr)         

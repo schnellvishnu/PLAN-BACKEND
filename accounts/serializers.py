@@ -1,4 +1,4 @@
-from accounts.models import UserRole,History,Register,UserrolePermissions,UserAuditHistoryOnly
+from accounts.models import UserRole,History,Register,UserrolePermissions,UserAuditHistoryOnly,Loginmodel
 from rest_framework import serializers
 from django.contrib.auth.models import User
 class UserRoleSerializer(serializers.ModelSerializer):
@@ -32,4 +32,10 @@ class UserHistorySerializer(serializers.ModelSerializer):
                         
     class Meta:
         model =UserAuditHistoryOnly
+        fields = "__all__"
+
+class LoginModelSerializer(serializers.ModelSerializer):
+                        
+    class Meta:
+        model =Loginmodel
         fields = "__all__"

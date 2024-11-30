@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<snx:SNXDispositionUpdatedMessage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cmn="urn:tracelink:mapper:sl:commontypes" xmlns:snx="urn:tracelink:mapper:sl:serial_number_exchange" xmlns="urn:tracelink:mapper:sl:serial_number_exchange">
+  <snx:ControlFileHeader>
+    <cmn:FileSenderNumber>56566565</cmn:FileSenderNumber>
+    <cmn:FileReceiverNumber>56546</cmn:FileReceiverNumber>
+    <cmn:FileControlNumber>4545646</cmn:FileControlNumber>
+    <cmn:FileDate>2024-03-27</cmn:FileDate>
+    <cmn:FileTime>10:05</cmn:FileTime>
+  </snx:ControlFileHeader>
+  <snx:MessageBody>
+    <cmn:EventDateTime>10:05</cmn:EventDateTime>
+    <cmn:EventTimeZoneOffset>56566565</cmn:EventTimeZoneOffset>
+    <snx:SerialNumbers>
+      <cmn:Serial>00774569872345Serial no</cmn:Serial>
+      <cmn:Serial>00774569872345RKK3GZZMS</cmn:Serial>
+      <cmn:Serial>00774569872345Serial no</cmn:Serial>
+      <cmn:Serial>00774569872345RKK3GZZMS</cmn:Serial>
+      <cmn:Serial>00774569872345A3149A1N6</cmn:Serial>
+      <cmn:Serial>0077456987234584Y8C3ZBC</cmn:Serial>
+      <cmn:Serial>00774569872345W6903Y1V9</cmn:Serial>
+    </snx:SerialNumbers>
+    <cmn:PackagingSerialNumberStatus>fgfgf</cmn:PackagingSerialNumberStatus>
+    <cmn:ItemAttribute />
+    <cmn:EventLocation>fgfg</cmn:EventLocation>
+    <cmn:ReasonDescription>dfdfdfg</cmn:ReasonDescription>
+  </snx:MessageBody>
+</snx:SNXDispositionUpdatedMessage>

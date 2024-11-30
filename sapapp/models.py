@@ -128,9 +128,7 @@ class Sapproduct(models.Model):
     Packet_type = models.CharField(max_length=100,null=True,blank=True)
     Revision_Number = models.CharField(max_length=100,null=True,blank=True)
     PT_Aim_Number = models.CharField(max_length=100,null=True,blank=True)
-
-
-
+    
     def __str__(self):
         return self.name   
       
@@ -141,7 +139,7 @@ class Sapproductionorder(models.Model):
     product_conn = models.ForeignKey(Sapproduct, on_delete= models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
-    batch_number = models.CharField(max_length=20,unique=True)
+    batch_number = models.CharField(max_length=6,unique=True)
     manufacturing_location = models.CharField(max_length=40)
     gln_number =models.CharField(max_length=40,unique=True,null=True)
     Production_line= models.ForeignKey(SapregisteredSystem, related_name='productionline_to_batch', on_delete=models.CASCADE)

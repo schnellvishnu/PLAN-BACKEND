@@ -27,6 +27,7 @@ urlpatterns = [
     path('customer/update/<int:pk>', views.updateCustomer.as_view()),
     path('customer/delete/<int:pk>', views.deleteCustomer.as_view()),
     path('customer/<int:id>/',views. CustomerViewIndividual.as_view()),
+    path('customername/<id>/',views. CustomernameViewIndividual.as_view()),
      
 # ----------------------------------------------------------------------------------
     path('customerproperty/',views.CustomerPropertyview.as_view()),
@@ -83,6 +84,8 @@ urlpatterns = [
 #--------------------------------------------------------------------------------------------
     path('productionorder/', views.ProductionOrderView.as_view()),
     path('productionorder/<int:id>/', views.ProductionOrderViewIndividual.as_view()),
+    path('productionorderidinprintertable/<int:id>/', views.ProductionOrdernumberusingprintertableIndividual.as_view()),
+    # path('productionordernoindividual/<int:id>/', views.ProductionOrdernumberIndividual.as_view()),
     path('productionorderreport/<id>/', views.ProductionOrderReportIndividual.as_view()),
     path('productionorder/update/<int:pk>', views.updateProductionOrder.as_view()),
     path('productionorder/delete/<int:pk>', views.deleteProductionOrder.as_view()),  
@@ -91,7 +94,12 @@ urlpatterns = [
     path('poproperty/<int:id>/', views.PoPropertyindividual.as_view()),
     path('poproperty/update/<int:pk>', views.updatePoProperty.as_view()),
     path('poproperty/delete/<int:pk>', views.deleteProductionOrder.as_view()),  
-#--------------------------------------------------------------------------------------------    
+#--------------------------------------------------------------------------------------------  
+   path('productmarket/', views.ProductMarketview.as_view()),
+    path('productmarket/<int:id>/',views.ProductmarketIndividual.as_view()),
+    path('productmarket/update/<int:pk>',views.UpdateProductmarket.as_view()),  
+
+#---------------------------------------------------------------------------------------
     path('productionorderhrf/', views.ProductionorderhrfView.as_view()),
     path('productionorderhrf/<int:id>/',views.Productionorderindividualhrf.as_view()),
     path('productionorderhrf/update/<int:pk>', views.updateProductionorderhrfView.as_view()),
@@ -125,6 +133,8 @@ urlpatterns = [
     path('gtin/update/<int:pk>', views.updateGtinview.as_view()),
     path('gtin/delete/<int:pk>', views.deleteGtinview.as_view()),
     path('gtin/<int:id>/',views.Gtinindividualview.as_view()),
+    path('gtinrcb/<id>/',views.Gtinrcbview.as_view()),
+   
 #------------------------------------------------------------------------------------   
     path('printer/', views.printerview.as_view()),
     path('printer/update/<int:pk>', views.updatePrinterview.as_view()),
@@ -150,5 +160,30 @@ urlpatterns = [
     path('downloaddestroyxml/', views.Downloaddestroyxml.as_view()),
     
     path('downloadallxml/', views.Downloadallxmlfiles.as_view()),
+    #--------------------------------------------------------------
+    path('returnslno/', views.Balancedserialnumberview.as_view()),
+    
+    # ...............................................................
+    # BACKUPDATA URLS
+    path('company/trash/<int:pk>', views.TrashCompany.as_view()),
+    path('company/restore/trash/<int:pk>', views.RestoreTrashCompany.as_view()),
+    path('customer/trash/<int:pk>', views.TrashCustomer.as_view()),
+    path('customer/restore/trash/<int:pk>', views.RestoreTrashCustomer.as_view()),
+    path('locations/trash/<int:pk>', views.TrashCustomerLocation.as_view()),
+    path('locations/restore/trash/<int:pk>', views.RestoreTrashCustomerLocation.as_view()),
+    path('product/trash/<int:pk>', views.TrashProduct.as_view()),
+    path('product/restore/trash/<int:pk>', views.RestoreTrashProduct.as_view()),
+    path('shippo/trash/<int:pk>', views.TrashShippo.as_view()),
+    path('shippo/restore/trash/<int:pk>', views.RestoreTrashShippo.as_view()),
+    path('productionorder/trash/<int:pk>', views.TrashProductionOrder.as_view()),
+    path('productionorder/restore/trash/<int:pk>', views.RestoreTrashProductionOrder.as_view()),
+    # ......................................................................................
+    
+    path('ProdOrderReport/', views.ProdOrderReport.as_view()),
+    path('ProdOrderReport/<id>/', views.ProdOrderReportIndividual.as_view()),
+    path('ProdOrderReportdate/', views.ProdOrderReportdate.as_view()),
+    path('ProductionOrderReportdate/', views.ProductionOrderReportdate.as_view()),
+    
+    path('allocatednumbers/', views.Allocatednumbersview.as_view()),
     
 ]

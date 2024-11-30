@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics
 
-from masterapp.models import Company, Customers,BarCodeType,SnProvider,Stock,Locations,ShipPO,Product,ProductionOrder,Markets,Gtins,PrinterdataTable,Downloadcodes
-from masterapp.serializers import CompanySerializer, CustomersSerializer,BarCodeTypeSerializer,SnProviderSerializer,StockSerializer,LocationSerializer,ShipPOSerializer,ProductionOrderSerializer,ProductSerializer,CompanyErpSerializer,ProductPropertySerializer,ShipPOPropertySerializer,ProductionOrderPropertySerializer,CompanyPropertySerializer,CompanyTracelinkSerializer,LocationPropertySerializer,ProductErpSerializer ,MarketsSerializer,CustomerTracelinkSerializer,ProductHrSerializer,ProductMarketpageSerializer,ProductionorderHrfSerializer,GtinsSerializer,PrinterSerializer,DownloadcodesSerializer,CustomersPropertySerializer
+from masterapp.models import Company, Customers,BarCodeType,SnProvider,Stock,Locations,ShipPO,Product,ProductionOrder,Markets,Gtins,PrinterdataTable,Downloadcodes,ProdReport,Allocatednumbers
+from masterapp.serializers import CompanySerializer, CustomersSerializer,BarCodeTypeSerializer,SnProviderSerializer,StockSerializer,LocationSerializer,ShipPOSerializer,ProductionOrderSerializer,ProductSerializer,CompanyErpSerializer,ProductPropertySerializer,ShipPOPropertySerializer,ProductionOrderPropertySerializer,CompanyPropertySerializer,CompanyTracelinkSerializer,LocationPropertySerializer,ProductErpSerializer ,MarketsSerializer,CustomerTracelinkSerializer,ProductHrSerializer,ProductMarketpageSerializer,ProductionorderHrfSerializer,GtinsSerializer,PrinterSerializer,DownloadcodesSerializer,CustomersPropertySerializer,BalancedslnoSerializer,ProdReportSerializer,AllocatednumberSerializer
 # from masterapp.permissions import ObjectDestroyPermission, Productpermission
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -86,6 +86,7 @@ class updateCompany(APIView):
                                 donebyuser=request.data['loggedInUsername'],
                                 donebyemployeeid=request.data['loggedInemployeeid'],
                                 donebyuserrole=request.data['loggedInUserrole'],
+                                description="Company  of id" + request.data["uniqueid"] + "\t"+"Updated",
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -97,11 +98,13 @@ class deleteCompany(APIView):
             detailsObj = Company.objects.get(pk=pk)
         except:
             return Response("Not found in database")
-        historysave=History(modelname='Locations',
+        uniqueid=str(request.data['id'])
+        historysave=History(modelname='Company',
                                 savedid=pk,
                                 operationdone='delete',
                                 donebyuser=request.data['loggedInUsername'],
                                 donebyuserrole=request.data['loggedInUserrole'],
+                                description="Company  of id" + uniqueid + "\t"+"Deleted",
                                 donedatetime=datetime.datetime.now())
         historysave.save()
 
@@ -130,7 +133,7 @@ class CompanyErpView(APIView):
                     operationdone='erp of this id created',
                     donebyuser=request.data['loggedInUsername'],
                     donebyuserrole=request.data['loggedInUserrole'], 
-                    description="hi",
+                    description="Company Erp of id"+device.id+"\t"+"Created",
                     donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(request.data['loggedInUsername'])
@@ -154,6 +157,7 @@ class updateCompanyErp(APIView):
                                 operationdone='erp of this id update',
                                 donebyuser=request.data['loggedInUsername'],
                                 donebyuserrole=request.data['loggedInUserrole'],
+                                description="Company Erp of id" + str(request.data["uniqueid"]) + "\t"+"Updated",
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -183,7 +187,7 @@ class CompanyPropertyView(APIView):
                     operationdone='property of this id create',
                     donebyuser=request.data['loggedInUsername'],
                     donebyuserrole=request.data['loggedInUserrole'], 
-                    description="hi",
+                    description="Company Property of id" + request.data["uniqueid"] + "\t"+"Created",
                     donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(request.data['loggedInUsername'])
@@ -206,6 +210,7 @@ class updateCompanyProperty(APIView):
                                 operationdone='property of this id update',
                                 donebyuser=request.data['loggedInUsername'],
                                 donebyuserrole=request.data['loggedInUserrole'],
+                                description="Company Property of id" + request.data["uniqueid"] + "\t"+"Updated",
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -273,7 +278,8 @@ class updateCustomer(APIView):
                                 savedid=pk,
                                 operationdone='update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated", 
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -286,14 +292,18 @@ class deleteCustomer(APIView):
         except:
             return Response("Not found in database")
 
-        detailsObj.delete()
+        
+        uniqueid=str(request.data['id'])
+        # print(uniqueid)
         historysave=History(modelname='Customer',
                                 savedid=pk,
                                 operationdone='Delete',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer of id"+"\t"+uniqueid+"\t"+"Deleted",  
                                 donedatetime=datetime.datetime.now())
         historysave.save()
+        detailsObj.delete()
         return Response(200)
     
 class CustomerViewIndividual(APIView):
@@ -301,7 +311,12 @@ class CustomerViewIndividual(APIView):
         detailsObj = Customers.objects.all().filter(id=id)
         serializeObj = CustomersSerializer(detailsObj, many=True)
         return Response(serializeObj.data) 
-    
+
+class CustomernameViewIndividual(APIView):
+    def get(self, request, id):
+        detailsObj = Customers.objects.all().filter(name=id)
+        serializeObj = CustomersSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)    
     
 class CustomersTracelinkView(APIView):
         def get(self, request):
@@ -327,6 +342,14 @@ class updateCustomerTracelink(APIView):
         serializeObj = CustomerTracelinkSerializer(detailObj, data=request.data)
         if serializeObj.is_valid():
             serializeObj.save()
+            historysave=History(modelname='Customer',
+                                savedid=pk,
+                                operationdone='Customer Tracelink of this id Update',
+                                donebyuser=request.data['loggedInUsername'],
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer Tracelink of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",  
+                                donedatetime=datetime.datetime.now())
+            historysave.save()
             return Response(200)
         return Response(serializeObj.errors)
 
@@ -353,7 +376,7 @@ class CustomerPropertyview(APIView):
                     operationdone='Customer Property create',
                     donebyuser=request.data['loggedInUsername'],
                     donebyuserrole=request.data['loggedInUserrole'], 
-                    # description="hi",
+                    description="Customer Property of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",  
                     donedatetime=datetime.datetime.now())
                 historysave.save()
                 return Response(request.data['loggedInUsername'])
@@ -374,7 +397,8 @@ class updateCustomerProperty(APIView):
                                 savedid=pk,
                                 operationdone='Customer property of this id update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer Property of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",   
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -424,11 +448,14 @@ class updateLocation(APIView):
         serializeObj = LocationSerializer(detailObj, data=request.data)
         if serializeObj.is_valid():
             serializeObj.save()
+            uniqueid=str(request.data["uniqueid"])
+            
             historysave=History(modelname='Locations',
                                 savedid=pk,
-                                operationdone='update',
+                                operationdone='Update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer Location of id "+ uniqueid +" Updated",   
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             
@@ -443,11 +470,13 @@ class deleteLocation(APIView):
             return Response("Not found in database")
 
         detailsObj.delete()
+        uniqueid=str(request.data['id'])
         historysave=History(modelname='Locations',
                                 savedid=pk,
                                 operationdone='update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer Location of id"+"\t"+uniqueid+"\t"+"Deleted",   
                                 donedatetime=datetime.datetime.now())
         historysave.save()
         return Response(200)
@@ -495,7 +524,8 @@ class updateLocationProperty(APIView):
                                 savedid=pk,
                                 operationdone=' Location property of this id update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Customer Location Property of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",    
                                 donedatetime=datetime.datetime.now())
             historysave.save()
             return Response(200)
@@ -527,9 +557,7 @@ class ProductPropertyView(APIView):
                     donebyuserrole=request.data['loggedInUserrole'], 
                     description="hi",
                     donedatetime=datetime.datetime.now())
-            historysave.save()
-            
-            
+            historysave.save() 
             return Response(200)
         return Response(serializeObj.errors)
 
@@ -545,9 +573,10 @@ class updateProductProperty(APIView):
             serializeObj.save()
             historysave=History(modelname="Product",
                                 savedid=pk,
-                                operationdone=' property of this id update',
+                                operationdone='property of this id update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Product Property of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",     
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
@@ -621,7 +650,8 @@ class updateProducthr(APIView):
                                 savedid=pk,
                                 operationdone='Hrf of this id update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Product Hrf of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",      
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
@@ -643,7 +673,7 @@ class  Productindividualhrf(APIView):
 
 class ProductView(APIView):
     def get(self, request):
-        detailsObj =Product.objects.all().order_by('id')
+        detailsObj =Product.objects.all().order_by('-id')
         serializeObj = ProductSerializer(detailsObj, many = True)
         return Response(serializeObj.data)
 
@@ -681,9 +711,10 @@ class updateProduct(APIView):
                                 
             historysave=History(modelname="Product",
                                 savedid=pk,
-                                operationdone='update',
+                                operationdone='Update',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Product  of id"+"\t"+request.data["uniqueid"]+"\t"+"Updated",      
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
@@ -699,11 +730,13 @@ class deleteProduct(APIView):
             return Response("Not found in database")
 
         detailsObj.delete()
+        uniqueid=str(request.data['id'])
         historysave=History(modelname="Product",
                                 savedid=pk,
                                 operationdone='delete',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Product  of id"+"\t"+ uniqueid+"\t"+"Deleted",       
                                 donedatetime=datetime.datetime.now())
         
         historysave.save()
@@ -793,7 +826,8 @@ class UpdateProductErp(APIView):
                                 savedid=pk,
                                 operationdone='erp of this id updated',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Product  of id"+"\t"+request.data["uniqueid"]+"\t"+"ErP Updated",       
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
@@ -844,6 +878,9 @@ class ProductmarketIndividual(APIView):
         return Response(serializeobj.data)                               
                             
 
+                                
+                            
+
     
              
 class ShipPOView(APIView):
@@ -852,23 +889,22 @@ class ShipPOView(APIView):
         serializeObj = ShipPOSerializer(detailsObj, many = True)
         return Response(serializeObj.data)
 
-   
     def post(self, request):
   
         serializeObj = ShipPOSerializer(data=request.data)
-
         if serializeObj.is_valid():
-
             device=serializeObj.save()
             record = ProductionOrder.objects.get(id=request.data["process_order_number"])
             record.status = "Shipping"
             record.save()
+            # productionorder_num=request.data['process_no_original'] 
+            # record = ProductionOrder.objects.get(process_order_number=productionorder_num)
+            # record.status = "Shipping"
+            # record.save()
             if request.method == 'POST': 
                 productionorder_num=request.data['process_no_original'] 
                 stockObj = Stock.objects.all().filter( process_order_number=productionorder_num)
                 stockObj.delete()
-          
-            
             historysave=History( modelname='ShipPO',
                    savedid=device.id,
                     operationdone='create',
@@ -876,23 +912,29 @@ class ShipPOView(APIView):
                     donebyuserrole=request.data['loggedInUserrole'], 
                     description="Created A New Shiipingorder"+request.data["shipping_order_name"]+"\t"+"by"+"\t"+ request.data['loggedInUsername'],
                     donedatetime=datetime.datetime.now())
-            historysave.save()
-           
-
-           
-            
+            historysave.save() 
             # record = ProductionOrder.objects.get(id=request.data["process_order_number"])
             # record.status = "Shipping"
             # record.save()
             return Response(request.data['process_no_original']) 
-            
-
         return Response(serializeObj.errors)
 
             
 
 class updateShipPO(APIView):
     def put(self, request, pk):
+        # print(request.data["uniqueid"])
+        # uniqueid=str(request.data["uniqueid"])
+        # print(uniqueid)
+        # print(request.data["shipping_order_name"])
+        # print(request.data["process_order_number"])
+        # print(request.data["destination_location"])
+        # print(request.data["source_location"])
+        # print(request.data["subject_name"])
+        # print(request.data["shipping_date"])
+        # print(request.data["shipping_time"])
+        # print(request.data["process_no_original"])
+        # print(request.data["status"])
         try:
             detailObj =ShipPO.objects.get(pk=pk)
         except:
@@ -901,14 +943,15 @@ class updateShipPO(APIView):
         serializeObj = ShipPOSerializer(detailObj, data=request.data)
         if serializeObj.is_valid():
             serializeObj.save()
-            historysave=History(modelname="ShipPO",
-                                savedid=pk,
-                                operationdone='updated',
-                                donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
-                                donedatetime=datetime.datetime.now())
+            # historysave=History(modelname="ShippingOrder",
+            #                     savedid=pk,
+            #                     operationdone='Updated',
+            #                     donebyuser=request.data['loggedInUsername'],
+            #                     donebyuserrole=request.data['loggedInUserrole'],
+            #                     description="ShippingOrder  of id"+"\t"+uniqueid+"\t"+"Updated",       
+            #                     donedatetime=datetime.datetime.now())
             
-            historysave.save()
+            # historysave.save()
 
             return Response(request.data['loggedInUsername'])
         return Response(serializeObj.errors)
@@ -921,10 +964,12 @@ class deleteShipPO(APIView):
             return Response("Not found in database")
 
         detailsObj.delete()
-        historysave=History( modelname='ShipPO',
+        uniqueid=str(request.data['id'])
+        historysave=History( modelname='ShippingOrder',
                     savedid=pk,operationdone='delete', 
                     donebyuser=request.data['loggedInUsername'],
                     donebyuserrole=request.data['loggedInUserrole'],
+                    description="ShippingOrder  of id"+"\t"+uniqueid+"\t"+"Delete",       
                     donedatetime=datetime.datetime.now())
         historysave.save()
         return Response(200)
@@ -937,9 +982,16 @@ class ShippoViewIndividual(APIView):
     
 class ShippoProductionordernumberGetingIndividual(APIView):
     def get(self,request,id):
-        detailsObj=ShipPO.objects.all().filter(process_no_original=id)
-        serializeObj=ShipPOSerializer(detailsObj,many=True)
-        return Response(serializeObj.data)             
+     
+           
+           
+            detailsObj=ShipPO.objects.all().filter(process_no_original=id)
+            if detailsObj:
+                serializeObj=ShipPOSerializer(detailsObj,many=True)
+                return Response(serializeObj.data)  
+            else:
+                return Response(100)
+       
 class ShipPOViewget(APIView):
     def get(self, request):
         detailsObj =ShipPO.objects.all()
@@ -1060,7 +1112,7 @@ class ProductionOrderView(APIView):
                     operationdone='create',
                     donebyuser=request.data['loggedInUsername'],
                     donebyuserrole=request.data['loggedInUserrole'], 
-                   description="Created A New Productionorder"+request.data["process_order_number"]+"\t"+"by"+"\t"+ request.data['loggedInUsername'],
+                    description="Created A New Productionorder"+request.data["process_order_number"]+"\t"+"by"+"\t"+ request.data['loggedInUsername'],
                     donedatetime=datetime.datetime.now())
             historysave.save()
 
@@ -1077,8 +1129,20 @@ class ProductionOrderReportIndividual(APIView):
     def get(self, request, id):
         detailsObj = ProductionOrder.objects.all().filter(batch_number=id)
         serializeObj = ProductionOrderSerializer(detailsObj, many=True)
-        return Response(serializeObj.data);
+        return Response(serializeObj.data)
     #ippol uiiiuiiooppmh
+class ProductionOrdernumberusingprintertableIndividual(APIView):
+      def get(self, request, id):
+        detailsObj = ProductionOrder.objects.all().filter(process_order_number=id)
+        if detailsObj:
+            serializeObj = ProductionOrderSerializer(detailsObj, many=True)
+            return Response(serializeObj.data)
+        
+        else:
+            return Response(100)
+       
+
+  
 class updateProductionOrder(APIView):
     def put(self, request, pk):
         try:
@@ -1097,17 +1161,14 @@ class updateProductionOrder(APIView):
                                              created_by=request.data['created_by'])
            
                 stocksave.save()
-            
-            historysave=History(modelname='ProductionOrder',
+                historysave=History(modelname='ProductionOrder',
                                 savedid=pk,
                                 operationdone='Updated',
                                 donebyuser=request.data['loggedInUsername'],
                                 donebyuserrole=request.data['loggedInUserrole'], 
                                 donedatetime=datetime.datetime.now())
             
-            historysave.save()
-
-
+                historysave.save()
             return Response(request.data['loggedInUsername'])
         return Response(serializeObj.errors)
 
@@ -1123,12 +1184,10 @@ class deleteProductionOrder(APIView):
                               savedid=pk,
                               operationdone='delete',
                               donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'],
+                              donebyuserrole=request.data['loggedInUserrole'],
                               donedatetime=datetime.datetime.now())
         
         historySave.save()
-    
-
     
         return Response(200)
 #/////////////////////////////////////////////////////
@@ -1138,25 +1197,23 @@ class PoProperty(APIView):
         detailsObj = ProductionOrder.objects.all()
         serializeObj = ProductionOrderPropertySerializer(detailsObj, many = True)
         return Response(serializeObj.data)
-
-   
+ 
     def post(self, request):
         serializeObj = ProductionOrderPropertySerializer(data=request.data)
         if serializeObj.is_valid():
             device=serializeObj.save()
             historysave=History(modelname='ProductionOrder',
-                    savedid=device.id,
-                    operationdone='Property of this id create',
-                    donebyuser=request.data['loggedInUsername'],
-                    donebyuserrole=request.data['loggedInUserrole'], 
-                    description="hi",
-                    donedatetime=datetime.datetime.now())
+                savedid=device.id,
+                operationdone='Property of this id create',
+                donebyuser=request.data['loggedInUsername'],
+                donebyuserrole=request.data['loggedInUserrole'], 
+                    # description="hi",
+                description="Productionorder Property of id"+device.id+"\t"+"Created",
+                donedatetime=datetime.datetime.now())
             historysave.save()
 
 
             return Response(request.data['loggedInUsername'])
-            
-            return Response(200)
         return Response(serializeObj.errors)
 
 class updatePoProperty(APIView):
@@ -1174,7 +1231,8 @@ class updatePoProperty(APIView):
                                 savedid=pk,
                                 operationdone='Property of this id Updated',
                                 donebyuser=request.data['loggedInUsername'],
-                                donebyuserrole=request.data['loggedInUserrole'], 
+                                donebyuserrole=request.data['loggedInUserrole'],
+                                description="Productionorder Property of id" + "\t" + request.data["uniqueid"]   + "\t"+"Updated", 
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
@@ -1216,7 +1274,9 @@ class ProductionorderhrfView(APIView):
         return JsonResponse(serializeObj.errors,safe=False)
 
 class updateProductionorderhrfView(APIView):
+   
     def put(self, request, pk):
+        lname=request.data['loggedInUsername']
         try:
             detailObj = ProductionOrder.objects.get(pk=pk)
         except:
@@ -1225,16 +1285,18 @@ class updateProductionorderhrfView(APIView):
         serializeObj = ProductionorderHrfSerializer(detailObj, data=request.data)
         if serializeObj.is_valid():
             serializeObj.save()
+            print(request.data['loggedInUsername'])
             historysave=History(modelname="ProductionOrder",
                                 savedid=pk,
                                 operationdone='Hrf of this id update',
-                                donebyuser=request.data['loggedInUsername'],
+                                donebyuser=lname,
                                 donebyuserrole=request.data['loggedInUserrole'], 
+                                description="Productionorder Hrf of id" + "\t" + request.data["uniqueid"]   + "\t"+"Updated", 
                                 donedatetime=datetime.datetime.now())
             
             historysave.save()
             
-            return Response(request.data['loggedInUsername'])
+            # return Response(request.data['loggedInUsername'])
             return Response(200)
         return JsonResponse(serializeObj.errors,safe=False)
 
@@ -1369,7 +1431,7 @@ class updateSnprovider(APIView):
         return Response(serializeObj.errors)
 
 class deleteSnprovider(APIView):
-    def delete(self, request, pk):
+    def delete(self, request,pk):
         try:
             detailsObj = SnProvider.objects.get(pk=pk)
         except:
@@ -1690,12 +1752,14 @@ class Gtinview(APIView) :
         def post(self,request):
             serializeobj=GtinsSerializer(data=request.data)
             gtin=request.data['gtin']
+            
             if serializeobj.is_valid():
                 device=serializeobj.save()
                 
                 path = '/SerialNumbers'
+                
 
-                filename = 'serial numbers CSV file.csv'
+                filename = gtin+".csv"
 
 
 
@@ -1736,7 +1800,7 @@ class Gtinview(APIView) :
                     #     v=temp
                     #     g=v[18:27]
                     #     i=0
-                    row_list = ["SN", "Gtin", "Serial no","Status"],
+                    row_list = ["SN", "Gtin", "Serialno","Status"],
                     
                         
                         # i=i+1
@@ -1761,12 +1825,12 @@ class Gtinview(APIView) :
                                       
                                 writer = csv.writer(file)
                                 if(i!=0):
-                                    valuelist = [i,gtin,g, "notallow"],
+                                    valuelist = [i,gtin,g,"notallow"],
                                     writer.writerows(valuelist)
                                 i=i+1   
                 
                     # gtin=request.data['gtin']
-                    minq=request.data['minimum_quantity']
+                    # minq=request.data['minimum_quantity']
               
                 
                     with open("csvfiles/"+gtin+".csv", newline='') as f:
@@ -1775,86 +1839,86 @@ class Gtinview(APIView) :
                             t=row[2]                    
                        
                        
-                    row_list = ["SN", "Gtin", "Serial no","Status","Sending Status"],
+                    # row_list = ["SN", "Gtin", "Serial no","Status","Sending Status"],
                     
                         
-                        # i=i+1
+                    #     # i=i+1
               
-                    with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
+                    # with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
                                       
-                            writer = csv.writer(file)
-                            writer.writerows(row_list)
-                            i=0
-                            k=0
-                    with open("csvfiles/"+gtin+".csv", newline='') as f:
-                            readobj=csv.reader(f)
-                            for row in readobj:
-                                t=row[2]        
+                    #         writer = csv.writer(file)
+                    #         writer.writerows(row_list)
+                    #         i=0
+                    #         k=0
+                    # with open("csvfiles/"+gtin+".csv", newline='') as f:
+                    #         readobj=csv.reader(f)
+                    #         for row in readobj:
+                    #             t=row[2]        
                           
                                
                        
                       
                         
-                                i=i+1
-                                # k=k+1
-                                if(k>int(minq)):
-                                    break
+                    #             i=i+1
+                    #             # k=k+1
+                    #             if(k>int(minq)):
+                    #                 break
                                                 
               
-                                with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
+                #                 with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
                                       
-                                    writer = csv.writer(file)
-                                    if(k!=0):
-                                        valuelist = [i,gtin,t, "allow",minq],
-                                        writer.writerows(valuelist)
-                                    k=k+1
-                                    slnolist=[]
-                                    rowIndex=[]
-                                    counter=1
-                                    loopcounter=-1
-                    with open("csvfiles/"+gtin+".csv", newline='') as f:
+                #                     writer = csv.writer(file)
+                #                     if(k!=0):
+                #                         valuelist = [i,gtin,t, "allow",minq],
+                #                         writer.writerows(valuelist)
+                #                     k=k+1
+                #                     slnolist=[]
+                #                     rowIndex=[]
+                #                     counter=1
+                #                     loopcounter=-1
+                #     with open("csvfiles/"+gtin+".csv", newline='') as f:
 
-                        readobj=csv.reader(f)
+                #         readobj=csv.reader(f)
 
-                        for row in readobj:
+                #         for row in readobj:
 
-                            if(row[3]=="notallow"):
+                #             if(row[3]=="notallow"):
 
-                                slnolist.append(row[2])
+                #                 slnolist.append(row[2])
 
-                                rowIndex.append(loopcounter)
+                #                 rowIndex.append(loopcounter)
 
-                                counter=counter+1
+                #                 counter=counter+1
 
-                            if(counter > int(minq)):
+                #             if(counter > int(minq)):
 
-                                break
+                #                 break
 
                        
 
-                            loopcounter=loopcounter+1
+                #             loopcounter=loopcounter+1
 
-                    json_numbers = json.dumps(slnolist)
+                #     json_numbers = json.dumps(slnolist)
 
-                    df=pd.read_csv("csvfiles/"+gtin+".csv")
+                #     df=pd.read_csv("csvfiles/"+gtin+".csv")
 
-                    for value in rowIndex:
+                #     for value in rowIndex:
 
-                        df.loc[value,'Status']="allocated"
+                #         df.loc[value,'Status']="allocated"
 
-                    df.to_csv("csvfiles/"+gtin+".csv",index=False)
+                #     df.to_csv("csvfiles/"+gtin+".csv",index=False)
                      
                      
-                    df=pd.read_csv("csvfiles/"+gtin+".csv")
-                    with open("csvfiles/"+gtin+".csv")  as f:
-                            readobj=csv.reader(f)
-                            counter=-1
-                            for row in readobj:
-                                    if counter<int(minq):
-                                        df=df.loc[df['Status']=='notallow']
-                                        df.shape 
-                                    counter=counter+1
-                    df.to_csv("csvfiles/"+gtin+".csv",index=False)                
+                #     df=pd.read_csv("csvfiles/"+gtin+".csv")
+                #     with open("csvfiles/"+gtin+".csv")  as f:
+                #             readobj=csv.reader(f)
+                #             counter=-1
+                #             for row in readobj:
+                #                     if counter<int(minq):
+                #                         df=df.loc[df['Status']=='notallow']
+                #                         df.shape 
+                #                     counter=counter+1
+                #     df.to_csv("csvfiles/"+gtin+".csv",index=False)                
                                                           
                                                         
                                               
@@ -1862,15 +1926,16 @@ class Gtinview(APIView) :
                                
                                 
                                 
-                gtin=request.data['gtin']
+                # gtin=request.data['gtin']
                 with open("csvfiles/"+gtin+".csv")  as f:
                     results = pd.read_csv("csvfiles/"+gtin+".csv")
                     count=len(results)
-                    obj = Gtins.objects.get(pk=device.id)
-                    detailObj=Gtins.objects.all().filter(pk=device.id).update(snnumbers=count)
+                #     obj = Gtins.objects.get(pk=device.id)
+                #     detailObj=Gtins.objects.all().filter(pk=device.id).update(snnumbers=count)
                     
                                 
-                                
+                    obj = Gtins.objects.get(gtin=gtin)
+                    detailObj=Gtins.objects.all().filter(gtin=obj.gtin).update(available_quantity=count)                
                 return Response(200)
             return Response(serializeobj.errors)
         
@@ -1964,10 +2029,40 @@ class updateGtinview(APIView):
             except:
                  return Response("Not found in database") 
              
-            serializerobj=GtinsSerializer(detailObj,request.data) 
+            serializerobj=GtinsSerializer(detailObj,request.data)
+            gtin=request.data['gtin'] 
             if serializerobj.is_valid():
-                device=serializerobj.save()
-                gtin=request.data['gtin']
+                serializerobj.save()
+                path = '/SerialNumbers'
+                
+
+                filename = gtin+".csv"
+
+
+
+
+                ftp = ftplib.FTP("aplusintellitech.com")
+
+                ftp.login("TrackNTrace@aplusintellitech.com","TrackNTrace")
+
+                ftp.cwd(path)
+
+                ftp.retrbinary("RETR " + filename, open("D:/csv_file.csv", 'wb').write)
+
+                ftp.quit()
+
+
+
+
+                with open("D:/csv_file.csv") as file:
+
+                    csvreader = csv.reader(file)
+
+                    for row in csvreader:
+
+                        print(row)
+                        
+              
                 with open("D:/csv_file.csv") as file:
                    
 
@@ -1975,13 +2070,14 @@ class updateGtinview(APIView):
                     array=file.readlines()
                     
                     array = [row.strip() for row in array]
+                    i=0
                     # print(array[0])
                 
                     # for temp in array:
                     #     v=temp
                     #     g=v[18:27]
                     #     i=0
-                    # row_list = ["SN", "Gtin", "Serial no","Status"],
+                    row_list = ["SN", "Gtin", "Serialno","Status"],
                     
                         
                         # i=i+1
@@ -1990,122 +2086,44 @@ class updateGtinview(APIView):
                                       
                             writer = csv.writer(file)
                             # writer.writerows(row_list)
-                            i=0
+                            # i=0
                     for temp in array:
                             v=temp
                             g=v[18:27]
                                     
                           
-                            valuelist = [i,gtin,g, "notallow"],
+                          
                        
                       
                         
-                            i=i+1
+                          
               
                             with open("csvfiles/"+gtin+".csv", 'a', newline='') as file:
                                       
                                 writer = csv.writer(file)
-                                
-                                writer.writerows(valuelist)   
+                                if(i!=0):
+                                    valuelist = [i,gtin,g,"notallow"],
+                                    writer.writerows(valuelist)
+                                i=i+1   
                 
                     # gtin=request.data['gtin']
-                    minq=request.data['minimum_quantity']
+                    # minq=request.data['minimum_quantity']
               
                 
                     with open("csvfiles/"+gtin+".csv", newline='') as f:
                         readobj=csv.reader(f)
                         for row in readobj:
-                            t=row[2]                    
-                       
-                       
-                    row_list = ["SN", "Gtin", "Serial no","Status","Sending Status"],
-                    
-                        
-                        # i=i+1
-              
-                    with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
-                                      
-                            writer = csv.writer(file)
-                            writer.writerows(row_list)
-                            i=0
-                            k=1
-                    with open("csvfiles/"+gtin+".csv", newline='') as f:
-                            readobj=csv.reader(f)
-                            for row in readobj:
-                                t=row[2]        
-                          
-                                valuelist = [i,gtin,t, "allow",minq],
-                       
-                      
-                        
-                                i=i+1
-                                k=k+1
-                                if(k>int(minq)):
-                                    break
-                                                
-              
-                                with open("Allocatedcsv/"+gtin+".csv", 'a', newline='') as file:
-                                      
-                                    writer = csv.writer(file)
-                                    
-                                    writer.writerows(valuelist)
-                                    
-                                    slnolist=[]
-                                    rowIndex=[]
-                                    counter=1
-                                    loopcounter=-1
-                    with open("csvfiles/"+gtin+".csv", newline='') as f:
-
-                        readobj=csv.reader(f)
-
-                        for row in readobj:
-
-                            if(row[3]=="notallow"):
-
-                                slnolist.append(row[2])
-
-                                rowIndex.append(loopcounter)
-
-                                counter=counter+1
-
-                            if(counter > int(minq)):
-
-                                break
-
-                       
-
-                            loopcounter=loopcounter+1
-
-                    json_numbers = json.dumps(slnolist)
-
-                    df=pd.read_csv("csvfiles/"+gtin+".csv")
-
-                    for value in rowIndex:
-
-                        df.loc[value,'Status']="allocated"
-
-                    df.to_csv("csvfiles/"+gtin+".csv",index=False)
-                     
-                     
-                    df=pd.read_csv("csvfiles/"+gtin+".csv")
-                    with open("csvfiles/"+gtin+".csv")  as f:
-                            readobj=csv.reader(f)
-                            counter=-1
-                            for row in readobj:
-                                    if counter<int(minq):
-                                        df=df.loc[df['Status']=='notallow']
-                                        df.shape 
-                                    counter=counter+1
-                    df.to_csv("csvfiles/"+gtin+".csv",index=False)                
-                                                          
+                            t=row[2]  
                                 
-                    results = pd.read_csv("csvfiles/"+gtin+'.csv')
+                with open("csvfiles/"+gtin+".csv")  as f:
+                    results = pd.read_csv("csvfiles/"+gtin+".csv")
                     count=len(results)
-                    obj = Gtins.objects.get(pk=device.id)
-                    detailObj=Gtins.objects.all().filter(pk=device.id).update(snnumbers=count)
+                #     obj = Gtins.objects.get(pk=device.id)
+                #     detailObj=Gtins.objects.all().filter(pk=device.id).update(snnumbers=count)
                     
                                 
-                                
+                    obj = Gtins.objects.get(gtin=gtin)
+                    detailObj=Gtins.objects.all().filter(gtin=obj.gtin).update(available_quantity=count)                
                 return Response(200)
             return Response(serializerobj.errors)        
         
@@ -2123,6 +2141,12 @@ class Gtinindividualview(APIView) :
                 detailobj=Gtins.objects.all().filter(id=id)
                 serializeobj=GtinsSerializer(detailobj,many=True)
                 return Response(serializeobj.data)
+class Gtinrcbview(APIView) :
+    def get(self,request,id):
+                detailobj=Gtins.objects.all().filter(gtin=id)
+                serializeobj=GtinsSerializer(detailobj,many=True)
+                return Response(serializeobj.data)
+                                
                                 
 class printerview(APIView) :
         def get(self,request):
@@ -2138,26 +2162,84 @@ class printerview(APIView) :
             
           
             gtin=request.data["gtin"]
+            type=request.data["type"]
+            lot=request.data["lot"]
+            print(lot)
             productionorderno=request.data['processordernumber']
-        
-            with open("Allocatedcsv/"+gtin+".csv", newline='') as f:
-                readobj=csv.reader(f)
-                for row in readobj:
-                    
-                        jsonArray.append(row[2])
-                    
-                jsonString = json.dumps(jsonArray)
-                
-            detailsObj =ProductionOrder.objects.get(id=productionorderno)
-
-            hrf=detailsObj.hrf
+            # printerid=request.data['id']
+            print(productionorderno)
+            try:
+                with open("Allocatedcsv/"+lot+".csv", newline='') as f:
+                    readobj=csv.reader(f)
+                    for row in readobj:
+                       if(row[3]=="allocated"):
+                            jsonArray.append(row[2])
+                            
+                        
+                    jsonString = json.dumps(jsonArray)
+                    # print(jsonString[0:10])
+                    childjson= json.loads(jsonString)
+                    s1=json.dumps(childjson[0:10])
+            except:
+                return Response(500)        
+            # detailsObj =PrinterdataTable.objects.get(id=productionorderno)
+            prodObj=ProductionOrder.objects.get(process_order_number=productionorderno)
+            
+            
+            hrf=prodObj.hrf
+            hrfjson=json.loads(hrf)
+            print(hrfjson)
+            if(type=="type1" or type=="type5"):
+                if(hrfjson == None  ):
+                    print("jjkhnaffd")                    
+                    return Response(400) 
+                else:     
+                    hrf1=hrfjson["hrf1"]
+                    print(hrf1)
+                    hrf2=hrfjson["hrf2"]
+                    hrf3=hrfjson["hrf3"]
+                    hrf4=hrfjson["hrf4"]
+                    hrf5=hrfjson["hrf5"]
+                    hrf6=hrfjson["hrf6"]
+                    hrf1value=hrfjson["hrf1value"]
+                    hrf2value=hrfjson["hrf2value"]
+                    hrf3value=hrfjson["hrf3value"]
+                    hrf4value=hrfjson["hrf4value"]
+                    hrf5value=hrfjson["hrf5value"]
+                    hrf6value=hrfjson["hrf6value"]
             serializeobj=PrinterSerializer(data=request.data)
-            if serializeobj.is_valid():
-                device=serializeobj.save()
-                obj = PrinterdataTable.objects.get(pk=device.id)
-                detailObj=PrinterdataTable.objects.filter(pk=device.id).update(numbers=jsonString,hrf=hrf)
                 
-            return Response(serializeobj.errors)        
+                                         
+            if(type=="type1" or type=="type5"):
+                                    
+              
+                if(hrf1 !="" and hrf1value != ""):  
+                                      
+                    if serializeobj.is_valid():
+                        device=serializeobj.save()
+                        obj = PrinterdataTable.objects.get(pk=device.id)
+                        detailObj=PrinterdataTable.objects.filter(pk=device.id).update(numbers=jsonString,hrf=hrf) 
+                        detailsObj1 =ProductionOrder.objects.get(process_order_number=productionorderno)
+                        Obj=ProductionOrder.objects.filter(process_order_number=detailsObj1.process_order_number).update(status="Inproduction") 
+                                            
+               
+                else:  
+                                   
+                    return Response(400)                         
+            else:
+                if serializeobj.is_valid():
+                    device=serializeobj.save()
+                    obj = PrinterdataTable.objects.get(pk=device.id)
+                    detailObj=PrinterdataTable.objects.filter(pk=device.id).update(numbers=jsonString,hrf=hrf)
+                    
+                    detailsObj1 =ProductionOrder.objects.get(process_order_number=productionorderno)
+                    Obj=ProductionOrder.objects.filter(process_order_number=detailsObj1.process_order_number).update(status="Inproduction")  
+                                        
+                return Response(serializeobj.errors) 
+            return Response(serializeobj.errors) 
+                     
+               
+           
         
 class updatePrinterview(APIView):
         def put(self,request,pk):
@@ -2181,15 +2263,23 @@ class updatePrinterview(APIView):
                 for row in readobj:
                     
                         jsonArray.append(row[2])
+                        # print(row[2])
                     
                 jsonString = json.dumps(jsonArray)
+                # print(jsonString)
+                
+                
+                
                 
             
-            serializeobj=PrinterSerializer(data=request.data)
-            if serializeobj.is_valid():
-                device=serializeobj.save()
-                obj = PrinterdataTable.objects.get(pk=device.id)
-                detailObj=PrinterdataTable.objects.filter(pk=device.id).update(numbers=jsonString)    
+            # serializeobj=PrinterSerializer(data=request.data)
+            # if serializeobj.is_valid():
+            #     print("hi")                    
+            #     device=serializeobj.save()
+            # obj = PrinterdataTable.objects.get(pk=device.id)
+            obj = PrinterdataTable.objects.get(id=pk)
+            detailObj=PrinterdataTable.objects.filter(pk=pk).update(numbers=jsonString) 
+            # print(obj.numbers)  
             return Response(200)
         
         
@@ -2217,7 +2307,7 @@ class Hrfdata(APIView):
         detailsObj = ProductionOrder.objects.get(id=id)
         # print(detailsObj.product_conn)
         prodObj=Product.objects.get(name=detailsObj.product_conn)
-        # print(prodObj.hrf3)
+        # print(prodObj.hrf4)
         hrfdict={
             "hrf1":prodObj.hrf1,"hrf2":prodObj.hrf2,"hrf3":prodObj.hrf3,"hrf4":prodObj.hrf4,
             "hrf5":prodObj.hrf5,"hrf6":prodObj.hrf6
@@ -2241,23 +2331,28 @@ class Downloadcodesget(APIView):
         jsonArray=[]
             
           
-        gtin=request.data["gtin"]
-        
-        with open("Allocatedcsv/"+gtin+".csv", newline='') as f:
-                readobj=csv.reader(f)
-                for row in readobj:
-                    
-                    jsonArray.append(str(row[1])+str(row[2]))
-                    
-                jsonString = json.dumps(jsonArray)
-                
-            
+        # gtin=request.data["gtin"]
+        lot=request.data["batch_number"]
+        print(lot)
+        try:
+            with open("Allocatedcsv/"+lot+".csv", newline='') as f:
+                    readobj=csv.reader(f)
+                    for row in readobj:
+                        
+                        jsonArray.append(str(row[1])+str(row[2]))
+                        
+                    jsonString = json.dumps(jsonArray)
+                    print(jsonString)
+        except:
+            return Response(300)    
         serializeobj=DownloadcodesSerializer(data=request.data)
         if serializeobj.is_valid():
             device=serializeobj.save()
             obj = Downloadcodes.objects.get(pk=device.id)
             
             detailObj=Downloadcodes.objects.filter(pk=device.id).update(serialnumberwithgtin=jsonString)
+        detailsObj5 = ProductionOrder.objects.get(batch_number=lot)
+        Obj=ProductionOrder.objects.filter(batch_number=detailsObj5.batch_number).update(btncontrollstatus="Downloaded") 
                 
         return Response(serializeobj.errors)
     
@@ -2288,59 +2383,172 @@ class Xmldataindividual(APIView):
         
     def post(self,request):
                             
-        processordernumber=request.data["process_no_original"]                                  
+        processordernumber=request.data["process_no_original"]  
+
+        try:
+            filereceivernumber=request.data["filereceivernumber"]
+        except:
+            return Response(50)                                
         # serializeobj=ShipmentdataSerializer(data=request.data)
-        filesenderno=request.data["filesendernumber"]
+        try:
+            filesenderno=request.data["filesendernumber"]
+        except:
+            return Response(100) 
+        
+        try:
+             businessname2=request.data["business_name2"]
+        except:
+            return Response(150)
+        try:
+             to_business_part_lookupid1=request.data["to_business_part_lookupid1"]
+        except:
+            return Response(250)
+        
+        try:
+             lot_number=request.data["lot_number"]
+        except:
+            return Response(300)
+        try:
+            filedate=request.data["filedate"]
+        except:
+            return Response(350)
+        try:
+           filetime=request.data["filetime"]
+        except:
+              return Response(400)
+        
+        try:
+             business_name=request.data["business_name"]
+
+        except:
+              return Response(450)
+        
+        try:
+               postalcode=request.data["postalcode"]
+        except:
+              return Response(500)
+        try:
+              country=request.data["country"]
+        except:
+              return Response(550)
+        try:
+             street1=request.data["street1"]
+        except:
+              return Response(600)  
+        try:
+             State_or_region=request.data["State_or_region"]
+        except:
+            return Response(650)
+        try:
+            city=request.data["city"]
+        except:
+            return Response(700)
+        try:
+            deliverynumber=request.data["deliverynumber"]
+        except:
+            return Response(300)
+        try:
+             transactionidentifier2=request.data["transactionidentifier2"]
+        except:     
+            return Response(300)
+        try:
+            factilty_type1=request.data["factilty_type1"]
+        except:
+              return Response(750)
+        try:
+            business_id_type=request.data["business_id_type"]
+        
+        except:
+            return Response(50) 
+        try:
+            filecontrolnumber=request.data["filecontrolnumber"]
+        except:
+             return Response(800)
+        try: 
+            delivery_completeflag=request.data["delivery_completeflag"]
+        except:
+            return Response(850)
+        try:
+            transactiondate=request.data["transactiondate"]
+        except:
+            return Response(900)
+        try:
+             
+            transactiontime=request.data["transactiontime"]
+        except:
+            return Response(950)
+        try:
+             salesdistribution_type=request.data["salesdistribution_type"]
+        except:
+            return Response(1000)
+        try:
+              shipfrom_countrycode=request.data["shipfrom_countrycode"]
+        except:
+            return Response(1050)
+        try:
+             shipto_countrycode=request.data["shipto_countrycode"]
+        except:
+            return Response(1070)
         detailobj=Locations.objects.get(id=filesenderno)
         # print(detailobj.name)
         
-        filereceivernumber=request.data["filereceivernumber"]
-        filecontrolnumber=request.data["filecontrolnumber"]
-        filedate=request.data["filedate"]
-        filetime=request.data["filetime"]
-        deliverynumber=request.data["deliverynumber"]
-        delivery_completeflag=request.data["delivery_completeflag"]
+       
+       
+       
+      
+        
+     
         transactionidentifier=request.data["transactionidentifier"]
-        transactionidentifier2=request.data["transactionidentifier2"]
-        transactiondate=request.data["transactiondate"]
-        transactiontime=request.data["transactiontime"]
-        shipfrom_countrycode=request.data["shipfrom_countrycode"]
-        shipto_countrycode=request.data["shipto_countrycode"]
-        salesdistribution_type=request.data["salesdistribution_type"]
+       
+  
+       
+        
+        try:
         # internal_material_code=request.data["internal_material_code"]
-        detailsObj1=ProductionOrder.objects.get(process_order_number= processordernumber)
+            detailsObj1=ProductionOrder.objects.get(process_order_number= processordernumber)
 
-        internal_material_code=detailsObj1.internal_material_number
-         
-        lot_number=request.data["lot_number"]
+            internal_material_code=detailsObj1.internal_material_number
+        except:
+            return Response(3000)
+        # print("imc") 
+        # print(internal_material_code)
         
         # quantity=request.data["quantity"]
-        detailsObjquantity=ProductionOrder.objects.get(process_order_number= processordernumber)
-        quantity=detailsObjquantity.quantity
-        
-        business_id_type=request.data["business_id_type"]
-        business_name=request.data["business_name"]
+        try:
+            detailsObjquantity=ProductionOrder.objects.get(process_order_number= processordernumber)
+            quantity=detailsObjquantity.quantity
+            
+        except:
+            return Response(3050)
        
-        street1=request.data["street1"]
-        city=request.data["city"]
-        State_or_region=request.data["State_or_region"]
-        postalcode=request.data["postalcode"]
-        country=request.data["country"]
+       
+       
+        
+     
+      
         
         
-        factilty_type1=request.data["factilty_type1"]
-        detailobfactilty_type1=Customers.objects.get(id=factilty_type1)
-        detailobfa1=Customers.objects.get(name=detailobfactilty_type1)
-        factilty_type1value=detailobfa1.siteid
-        
+        try:
+            detailobfactilty_type1=Customers.objects.get(id=factilty_type1)
+            detailobfa1=Customers.objects.get(name=detailobfactilty_type1)
+            factilty_type1value=detailobfa1.siteid
+            # print(factilty_type1value)
+        except:
+            return Response(4000)
+            
         # factilty_type2=request.data["factilty_type2"]
-        detailobfa2=Customers.objects.get(name=detailobfactilty_type1)
-        factilty_type2value=detailobfa2.company_gln
-        
+        try:
+
+            detailobfa2=Customers.objects.get(name=detailobfactilty_type1)
+            factilty_type2value=detailobfa2.company_gln
+        except:
+            return Response(4050)
+            
         # business_name2=request.data["business_name2"]
-        businessname2=request.data["business_name2"]
+       
         
         detailobjb2=Locations.objects.get(id=businessname2)
+        
      
         
        
@@ -2353,39 +2561,60 @@ class Xmldataindividual(APIView):
        
         
         # street2=request.data["street2"]
-        detailobjstreet2=Locations.objects.get(name=detailobjb2)
-        street2=detailobjstreet2.address
-        
+        try:
+
+            detailobjstreet2=Locations.objects.get(name=detailobjb2)
+            street2=detailobjstreet2.address
+        except:
+            return Response(5000)
         # city2=request.data["city2"]
-        detailobjcity2=Locations.objects.get(name=detailobjb2)
-        city2= detailobjcity2.city
+        try:
+
+            detailobjcity2=Locations.objects.get(name=detailobjb2)
+            city2= detailobjcity2.city
+        except:
+            return Response(5050)   
         
         # State_or_region2=request.data["State_or_region"]
-        detailobjState_or_region2=Locations.objects.get(name=detailobjb2)
-        State_or_region2=detailobjState_or_region2.state
+        try:
+            detailobjState_or_region2=Locations.objects.get(name=detailobjb2)
+            State_or_region2=detailobjState_or_region2.state
+        except:
+            return Response(6000)
         
         # postalcode2=request.data["postalcode2"]
-        detailobjpostalcode2=Locations.objects.get(name=detailobjb2)
-        postalcode2=detailobjpostalcode2.zip
-        
+        try:
+                
+            detailobjpostalcode2=Locations.objects.get(name=detailobjb2)
+            postalcode2=detailobjpostalcode2.zip
+        except:
+            return Response(6050)
+            
         # detailobjb2.name
         # district=request.data["district"]
-        detailobjdistrict=Locations.objects.get(name=detailobjb2)
-        district=detailobjdistrict.district
-        
+        try:
+            detailobjdistrict=Locations.objects.get(name=detailobjb2)
+            district=detailobjdistrict.district
+        except:
+            return Response(7000)
+            
         # country2=request.data["country2"]
-        detailobjcountry2=Locations.objects.get(name=detailobjb2)
-        country2=detailobjcountry2.country
-        
-        to_business_part_lookupid1=request.data["to_business_part_lookupid1"]
-        
-        detailobjto_business_part_lookupid1=Locations.objects.get(id=to_business_part_lookupid1)
-        s1=detailobjto_business_part_lookupid1.customer_id 
-        # detailobjbusiness_part_lookupid1=Locations.objects.get(name=detailobjto_business_part_lookupid1)
-        
-        to_business=Customers.objects.get(name=s1)
-        
-        to_business_part_lookupid=to_business.tobusinessparylookupid
+        try:
+            detailobjcountry2=Locations.objects.get(name=detailobjb2)
+            country2=detailobjcountry2.country
+        except:
+            return Response(7050)
+       
+        try:
+            detailobjto_business_part_lookupid1=Locations.objects.get(id=to_business_part_lookupid1)
+            s1=detailobjto_business_part_lookupid1.customer_id 
+            # detailobjbusiness_part_lookupid1=Locations.objects.get(name=detailobjto_business_part_lookupid1)
+            
+            to_business=Customers.objects.get(name=s1)
+            
+            to_business_part_lookupid=to_business.tobusinessparylookupid
+        except:
+            return Response(8000)
         # print(to_business.tobusinessparylookupid)
         
         
@@ -2393,9 +2622,11 @@ class Xmldataindividual(APIView):
         
         
         # to_shiptolocationlookupid=request.data["to_shiptolocationlookupid"]
-        detailobjshiptolocationlookupid=Locations.objects.get(name=detailobjb2)
-        to_shiptolocationlookupid=detailobjshiptolocationlookupid.ship_to_locationlookup_id
-       
+        try:
+            detailobjshiptolocationlookupid=Locations.objects.get(name=detailobjb2)
+            to_shiptolocationlookupid=detailobjshiptolocationlookupid.ship_to_locationlookup_id
+        except:
+            return Response(8050)
              
         # print(filesenderno)
         # if serializeobj.is_valid():
@@ -2588,17 +2819,60 @@ class Xmldataindividual(APIView):
 class Destroyingxml(APIView):
     def post(self, request):
         # detailObj=Shipmentfiledata.objects.get(id=id)
-        FileSenderNumber=request.data['filesendernumber']
-        FileReceiverNumber=request.data['filereceivernumber']
-        FileControlNumber=request.data['filecontrolnumber']
-        FileDate=request.data['filedate']
-        FileTime=request.data['filetime']
-        EventDateTime=request.data['EventTimeZoneOffset']
+        try:
+            FileSenderNumber=request.data['filesendernumber']
+        except:
+            return Response(250)
+        try:
+            FileReceiverNumber=request.data['filereceivernumber']
+        except:
+            return Response(300)    
+        try:
+            FileControlNumber=request.data['filecontrolnumber']
+        except:
+            return Response(350)
+            
+        try:
+            FileDate=request.data['filedate']
+        except:
+             return Response(400)
+        try:
+            EventDateTime=request.data['EventTimeZoneOffset']
+        except:
+             return Response(450)
+        try:
+             Filetime=request.data['filetime']
+        except:
+             return Response(500)
         # SerialNumbers=request.data['filesendernumber']
         PackagingSerialNumberStatus=request.data['packagingstatus']
         ItemAttribute=request.data['itemAttribute']
         EventLocation=request.data['eventLocation']
         ReasonDescription=request.data['reasonDescription']
+        
+        ponumber=request.data['process_no_original']
+        
+        
+        try:
+            detailsobj2 = ShipPO.objects.get(process_no_original=ponumber)
+            prodObj=PrinterdataTable.objects.get(processordernumber=detailsobj2.process_no_original)
+            cin=json.loads(str(prodObj.Rejectednumbers))
+        except:
+            return Response(100)
+        
+        stringjson=str(cin)
+        lengthdestroy=len(cin)
+        gtinno=prodObj.gtin
+        new1arry=[]
+        for i in range(lengthdestroy):
+                                
+            new1arry.append(str(gtinno)+str(cin[i]))
+            
+            print(new1arry)
+        
+        # print(lengthdestroy)
+         
+                             
        
         
         # tree=ET.parse("xmlfiles/commissioning.xml")
@@ -2626,7 +2900,7 @@ class Destroyingxml(APIView):
         ab4 = ET.SubElement(a1, "cmn:FileDate")
         ab4.text = str(FileDate)
         ab5 = ET.SubElement(a1, "cmn:FileTime")
-        ab5.text = str(FileTime)
+        ab5.text = str(Filetime)
         a2 = ET.Element("snx:MessageBody")
         root.append(a2)
         abc2 = ET.SubElement(a2, "cmn:EventDateTime")
@@ -2635,10 +2909,13 @@ class Destroyingxml(APIView):
         abc3.text = str(FileSenderNumber)
         ab2 = ET.SubElement(a2, "snx:SerialNumbers")
         ########################## iNSIDE LOOP
-        for i in range(10):
+        # for i in range(10):
+        i=0
+        while i < lengthdestroy:
       
             abc4 = ET.SubElement(ab2, "cmn:Serial")
-            abc4.text = "54465656"
+            abc4.text = str(new1arry[i])
+            i=i+1    
         
         ######################### END LOOP
         abc5 = ET.SubElement(a2,"cmn:PackagingSerialNumberStatus")
@@ -2655,7 +2932,8 @@ class Destroyingxml(APIView):
         processordernumber=request.data["process_no_original"] 
         with open("xmlfiles/"+ processordernumber+"_po_destroy.xml", "wb") as files:
             ET.indent(tree, '  ')
-            tree.write(files,encoding='utf-8', xml_declaration=True)                        
+            tree.write(files,encoding='utf-8', xml_declaration=True)
+            print("genetated")                        
         return Response(200)    
             
 class Commissioningxml(APIView):
@@ -2698,17 +2976,7 @@ class Commissioningxml(APIView):
     #     # print(seriallist)
     #     lengthserialno=len(serialno)
     #     print(lengthserialno)
-    def post(self,request):
-                                
-        
-            
-          
-       
-        
-       
-                    
-       
-                
+    def post(self,request):         
             
         # serializeobj=CommissioningxmldataSerializer(data=request.data)
         
@@ -2716,42 +2984,87 @@ class Commissioningxml(APIView):
         #     device=serializeobj.save()
             
         processordernumber=request.data["process_no_original"] 
-        filesenderno=request.data["filesendernumber"]
-        detailobjfilesenderno=Locations.objects.get(id=filesenderno)
-        filereceivernumber=request.data["filereceivernumber"]
-        filedate=request.data["filedate"]
-        filetime=request.data["filetime"]
-        EventTimeZoneOffset=request.data["EventTimeZoneOffset"]
-        filecontrolnumber=request.data["filecontrolnumber"]
+       
+        # EventTimeZoneOffset=request.data["EventTimeZoneOffset"]
+        # eventdatetime= request.data["eventdatetime"]
+        # filecontrolnumber=request.data["filecontrolnumber"]
+        try:
+            filereceivernumber=request.data["filereceivernumber"]
+        except:
+            return Response(100)  
+        try:
+            filesenderno=request.data["filesendernumber"]
+        except:
+            return Response(300) 
+        try: 
+            detailobjfilesenderno=Locations.objects.get(id=filesenderno)
+        
+            filedate=request.data["filedate"]
+        except: 
+            return Response(400) 
+        
+        try: 
+            filetime=request.data["filetime"]
+        except:
+            return Response(500)
+        try:
+            lotnumber=request.data["lotnumber"]
+        except:
+            return Response(600)
+       
+        try:
+            serialno=request.data['serialnumber']
+        except:
+            return Response(700)
+        try:
+            EventTimeZoneOffset=request.data["EventTimeZoneOffset"]
+        except:
+             return Response(800)
+        
+       
+       
+        try:
+              filecontrolnumber=request.data["filecontrolnumber"]
+        except:
+            return Response(900)
             # eventdatetime=request.data["eventdatetime"]
-            
-        detailsObj1=ProductionOrder.objects.get(process_order_number= processordernumber)
+        # if(filereceivernumber==""):
+        #     return Response(200)   
+        try:
+            detailsObj1=ProductionOrder.objects.get(process_order_number= processordernumber)
 
-        internal_material_code=detailsObj1.internal_material_number
-            
-        lotnumber=request.data["lotnumber"]
-            
-        detailsObjexp=ProductionOrder.objects.get(process_order_number= processordernumber)
+            internal_material_code=detailsObj1.internal_material_number
+        except:
+            return Response(950)     
+      
+        try:    
+            detailsObjexp=ProductionOrder.objects.get(process_order_number= processordernumber)
 
-        expirationdate=detailsObjexp.expiration_date
-        packagingLevel=request.data["packagingLevel"]
-            
-        detailsObjproductionLineId=ProductionOrder.objects.get(process_order_number= processordernumber)
+            expirationdate=detailsObjexp.expiration_date
+           
+        except:
+            return Response(1000) 
 
-        productionLineId=detailsObjproductionLineId.line
+        try: 
             
-        eventLocation=request.data["eventLocation"]
+            detailsObjproductionLineId=ProductionOrder.objects.get(process_order_number= processordernumber)
+
+            productionLineId=detailsObjproductionLineId.line
+                
+            
+        except:
+            return Response(1050)  
             
         snarray=[]
-        serialno=request.data['serialnumber']
+       
         print(serialno)
             # parseserialno=json.dumps(serialno)
         loadjson=json.loads(str(serialno)) 
             # print(loadjson)
         lengthserialno=len(str(loadjson))
                              
-           
-            
+        eventLocation=request.data["eventLocation"]   
+        packagingLevel=request.data["packagingLevel"]    
               
             
                           
@@ -2970,7 +3283,7 @@ class Downloadshipmentxml(APIView):
 
         ftp.cwd(path)
 
-        ftp.retrbinary("RETR " + filename, open("D:XMLFILEDATA"+ processordernumber+"_shipment.xml", 'wb').write)
+        ftp.retrbinary("RETR " + filename, open("D:\XMLFILEDATA/"+ processordernumber+"_shipment.xml", 'wb').write)
 
         ftp.quit()
             
@@ -3007,7 +3320,7 @@ class Downloadcommissioningxml(APIView):
 
         ftp.cwd(path)
 
-        ftp.retrbinary("RETR " + filename, open("D:/"+ processordernumber+"_po_commissioning.xml", 'wb').write)
+        ftp.retrbinary("RETR " + filename, open("D:\XMLFILEDATA/"+ processordernumber+"_po_commissioning.xml", 'wb').write)
 
         ftp.quit()
             
@@ -3203,7 +3516,7 @@ class Downloadallxmlfiles(APIView):
 
             ftp.cwd(path)
 
-            ftp.retrbinary("RETR " + filename, open( "\XMLDOWNLOADEDFILES/"+ processordernumber+"_shipment.xml", 'wb').write)
+            ftp.retrbinary("RETR " + filename, open("D:\XMLDOWNLOADEDFILES/"+ processordernumber+"_shipment.xml", 'wb').write)
             
             ftp.quit()
             
@@ -3226,12 +3539,7 @@ class Downloadallxmlfiles(APIView):
             filename =  processordernumber+"_po_commissioning.xml"
                 # filename = "60_po_commissioning.xml"
                 # filename = "10_shipment.xml"
-           
-            
-            
-
-
-
+        
             ftp = ftplib.FTP("aplusintellitech.com")
 
             ftp.login("TrackNTrace@aplusintellitech.com","TrackNTrace")
@@ -3240,11 +3548,6 @@ class Downloadallxmlfiles(APIView):
 
             ftp.retrbinary("RETR " + filename, open("D:\XMLDOWNLOADEDFILES/"+ processordernumber+"_po_commissioning.xml", 'wb').write)
             
-            
-                  
-            
-            
-
             ftp.quit()
             
             
@@ -3294,10 +3597,601 @@ class Downloadallxmlfiles(APIView):
                     filepath = os.path.join(root, filename)
                     file_paths.append(filepath)
                     
-                with ZipFile('D:\XMLFILEDATA/my_python_files.zip','w') as zip:
+                with ZipFile('D:\XMLFILEDATA/xml_files.zip','w') as zip:
        
                     for file in file_paths:
                         zip.write(file)
                 
                                     
-        return Response(200)                     
+        return Response(200)
+#   ...................................................................///
+class Balancedserialnumberview(APIView):
+    def post(self,request):
+        id=request.data["id"]
+        gtin=request.data["gtin"]
+        lot=request.data["batch_number"]
+        detailsObj = ProductionOrder.objects.get(id=id) 
+        prodObj=PrinterdataTable.objects.get(lot=detailsObj.batch_number)
+        balance_slno_json=prodObj.balanced_serialnumbers
+        balance_slno_list= json.loads(balance_slno_json)
+        # print(balance_slno_json)
+        # balance_slno_list=json.loads(balance_slno_json)
+       
+        # df=pd.read_csv("csvfiles/"+gtin+".csv")
+        indexlist=[]
+        # print(gtin)
+        with open("csvfiles/"+gtin+".csv", newline='') as file:
+
+            readobj=csv.reader(file)
+            last_row = None
+            for row in readobj:
+                if row:  # This skips blank lines
+                    last_row = row
+            i=int(last_row[0])+1       
+
+        
+        
+
+
+        with open("csvfiles/"+gtin+".csv", 'a', newline='') as file:
+                    for t in balance_slno_list:                                
+                        writer = csv.writer(file)
+                        valuelist = [i,gtin,t,"notallow"],
+                        writer.writerows(valuelist)
+                        i=i+1
+        detailsObj5 = ProductionOrder.objects.get(batch_number=lot)
+        Obj=ProductionOrder.objects.filter(batch_number=detailsObj5.batch_number).update(btncontrollstatus="Numbers Returened") 
+        return Response(200)
+
+        # ....................................................
+        
+        # with open("Allocatedcsv/"+gtin+".csv", newline='') as t:
+        #     readobj=csv.reader(t)
+            
+        #     for row in readobj:
+        #           if row[3] =='unallocated' :
+        #                 # print( row[3])
+                     
+        #                 with open("csvfiles/"+gtin+'.csv', 'a', encoding='UTF8',newline='') as f:
+                            
+        #                     i=0           # print(row)
+                                      
+        #                     writer = csv.writer(f)
+                                    
+        #                     valuelist = [gtin,t, "unallocated",],
+        #                     writer.writerows(row)
+        #                     i=i+1
+        
+        # with open("Allocatedcsv/"+gtin+".csv","r") as demo2:
+    # # creating reader object
+    #         csv_reader=csv.reader(demo2)
+    # # reading the file
+    #         data=[]
+    #         for row in csv_reader:
+    #             if row[3]=="unallocated":
+    #                 data.append(row)       
+    #     with open("csvfiles/"+gtin+'.csv',"a",newline="") as demo1:
+            
+    #         # creating writer object
+    #         csv_writer=csv.writer(demo1)
+    #         # appending data
+    #         csv_writer.writerows(data[1:])       
+       
+# .............................................................................
+
+# BACKUP DATAS CODE
+
+class TrashCompany(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj =Company.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Company.objects.all().filter(id=pk)
+        detailObj=Company.objects.filter(id=pk).update(companyflag=True)
+      
+       
+        historySave = History(modelname='company',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the company " +request.data['company_name'] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashCompany(APIView):
+    def delete(self, request, pk):
+        company_name=request.data['company_name']
+        try:
+            detailsObj = Company.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Company.objects.all().filter(id=pk)
+        detailObj=Company.objects.filter(id=pk).update(companyflag=False)
+       
+       
+        historySave = History(modelname='company',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the company " + company_name +" from trash")
+        historySave.save()
+        return Response(200)
+
+    
+class TrashCustomer(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj =Customers.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Customers.objects.all().filter(id=pk)
+        detailObj=Customers.objects.filter(id=pk).update(customerflag=True)
+      
+       
+        historySave = History(modelname='customer',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the customer " +request.data['name'] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashCustomer(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj = Customers.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Customers.objects.all().filter(id=pk)
+        detailObj=Customers.objects.filter(id=pk).update(customerflag=False)
+       
+       
+        historySave = History(modelname='customer',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the customer " +request.data['name'] + " from trash")
+        historySave.save()
+        return Response(200)    
+    
+
+  
+class TrashCustomerLocation(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj =Locations.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Locations.objects.all().filter(id=pk)
+        detailObj=Locations.objects.filter(id=pk).update(locationflag=True)
+      
+       
+        historySave = History(modelname='customerlocation',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the customerlocation " +request.data['name'] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashCustomerLocation(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj = Locations.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Locations.objects.all().filter(id=pk)
+        detailObj=Locations.objects.filter(id=pk).update(locationflag=False)
+       
+       
+        historySave = History(modelname='customerlocation',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the customerlocation " +request.data['name'] + " from trash")
+        historySave.save()
+        return Response(200)  
+                 
+      
+      
+class TrashProduct(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj =Product.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Product.objects.all().filter(id=pk)
+        detailObj=Product.objects.filter(id=pk).update(productflag=True)
+      
+       
+        historySave = History(modelname='product',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the product " +request.data['name'] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashProduct(APIView):
+    def delete(self, request, pk):
+        
+        try:
+            detailsObj = Product.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = Product.objects.all().filter(id=pk)
+        detailObj=Product.objects.filter(id=pk).update(productflag=False)
+       
+       
+        historySave = History(modelname='product',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the product " + request.data["name"] +" from trash")
+        historySave.save()
+        return Response(200)                                                 
+    
+    
+    
+class TrashShippo(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj =ShipPO.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = ShipPO.objects.all().filter(id=pk)
+        detailObj=ShipPO.objects.filter(id=pk).update(shippoflag=True)
+      
+       
+        historySave = History(modelname='shippo',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the shippingorder " +request.data['shipping_order_name'] +" to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashShippo(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj = ShipPO.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = ShipPO.objects.all().filter(id=pk)
+        detailObj=ShipPO.objects.filter(id=pk).update(shippoflag=False)
+       
+       
+        historySave = History(modelname='shippo',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the shippingorder " +request.data['shipping_order_name'] + " from trash")
+        historySave.save()
+        return Response(200)   
+    
+class TrashProductionOrder(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj = ProductionOrder.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = ProductionOrder.objects.all().filter(id=pk)
+        detailObj=ProductionOrder.objects.filter(id=pk).update(prodcutionorderflag=True)
+        # detailsObj.delete()
+       
+        historySave = History(modelname='productionorder',
+                              savedid=pk,
+                              operationdone='deletetotrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Deleted the productionorder " + request.data['process_order_number'] + " to trash")
+        historySave.save()
+        return Response(200)
+
+class RestoreTrashProductionOrder(APIView):
+    def delete(self, request, pk):
+        try:
+            detailsObj = ProductionOrder.objects.get(pk=pk)
+        except:
+            return Response("Not found in database")
+        detailsObj = ProductionOrder.objects.all().filter(id=pk)
+        detailObj=ProductionOrder.objects.filter(id=pk).update(prodcutionorderflag=False)
+        # detailsObj.delete()
+       
+        historySave = History(modelname='productionorder',
+                              savedid=pk,
+                              operationdone='restorefromtrash',
+                              donebyuser=request.data['loggedInUsername'],
+                              donebyuserrole=request.data['loggedInUserrole'],
+                              donedatetime=datetime.datetime.now(),
+                              description="Restored the productionorder " + request.data['process_order_number'] + " from trash")
+        historySave.save()
+        return Response(200)
+    
+# ....................................................................................
+class ProdOrderReport(APIView):
+    def get(self, request):
+        detailsObj = ProdReport.objects.all()
+        serializeObj = ProdReportSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)
+    def post(self, request):
+        serializeObj = ProdReportSerializer(data=request.data)
+       
+        if serializeObj.is_valid():
+            serializeObj.save()
+          
+           
+           
+            
+            
+            return Response(200)
+        return Response(serializeObj.errors)
+
+class ProdOrderReportIndividual(APIView):
+    def get(self, request, id):
+        detailsObj = ProdReport.objects.all().filter(batch_number=id)
+        serializeObj = ProdReportSerializer(detailsObj, many=True)
+        return Response(serializeObj.data)
+    #     try:
+    #         detailsObj = ProductionReport.objects.get(batch_number=id)
+    #     except:
+    #         return Response("Not found in database")
+
+    #     serializeObj = ProductionReportSerializer(detailsObj, data=request.data)
+    #     if (serializeObj.is_valid()):
+    #         return Response(serializeObj.data)
+
+    #     return Response(serializeObj.errors)
+class ProdOrderReportdate(APIView):  
+    def get(self, request):
+        detailsObj = ProdReport.objects.all()
+        serializeObj = ProdReportSerializer(detailsObj, many=True)
+        # fromDate = request.data["datefrom"]
+        # toDate = request.data["dateto"]
+        # response  = ProductionReport.objects.filter( production_date=fromDate, production_date__lte=toDate)
+        return Response(200)
+    
+    def post(self, request):
+        serializeObj = ProdReportSerializer(data=request.data)
+        v=[]
+        startdate = request.data["datefrom"]
+        
+        toDate = request.data["dateto"]
+        # fromDate=str(request.POST.get('datefrom'))
+        # toDate=str(request.POST.get("dateto"))
+        # response  =ProductionReport.objects.all().filter(production_date=id)
+        
+        response  =ProdReport.objects.all().filter(production_date__range=(startdate, toDate))
+        serializeObj = ProdReportSerializer(response , many=True)
+        return Response(serializeObj.data)
+# /////////////////////////////////////////////////////////////////////////////
+class Allocatednumbersview(APIView) :
+        def get(self,request):
+            detailObj=Allocatednumbers.objects.all().order_by('-id')
+            serializeobj=AllocatednumberSerializer(detailObj,many=True)
+            return Response(serializeobj.data)
+        
+        
+        
+       
+        
+        
+        def post(self,request):
+            serializeobj=AllocatednumberSerializer(data=request.data)
+            gtin=request.data['gtin_number']
+            lot=request.data['batch_number']
+            minq=request.data['quantity']
+            loginname=request.data['loggedInUsername']
+            loginuserrole=request.data['loggedInUserrole']
+            print(gtin)
+            print(lot)
+            print(minq)
+            try:
+                obj = Gtins.objects.get(gtin=gtin)
+                print(obj.available_quantity)
+                Av_quty=obj.available_quantity
+                maximum_number_of_quanty_allocated=100000
+            except:
+                return Response(500)    
+            try:
+                with open("csvfiles/"+gtin+".csv")  as f:
+                                results = pd.read_csv("csvfiles/"+gtin+".csv")
+                                count=len(results)
+                                print(count)
+                                if(count==0):
+                                    return Response(600)
+                                elif(int(minq )>maximum_number_of_quanty_allocated):
+                                    return Response(700)  
+                                elif(int(minq)>int(Av_quty)):
+                                    return Response(800)                 
+                if serializeobj.is_valid():
+                    serializeobj.save()
+                   
+                    try:
+                       
+        
+                        with open("csvfiles/"+gtin+".csv")  as f:
+                                results = pd.read_csv("csvfiles/"+gtin+".csv")
+                                count=len(results)
+                                print(count)
+                               
+                                obj = Gtins.objects.get(gtin=gtin)
+                                detailObj=Gtins.objects.all().filter(gtin=obj.gtin).update(available_quantity=count) 
+                                print("availabe quantiyt upadateed to gtin model")   
+                        # with open("csvfiles/"+gtin+".csv", newline='') as f:
+                        #             readobj=csv.reader(f)
+                        #             for row in readobj:
+                        #                 t=row[2]
+                                        # print(t)                    
+                                
+                                
+                        row_list = ["SN", "Gtin", "Serialno","Status","SendingStatus","lot"],
+                                
+                                    
+                                    # i=i+1
+                        
+                        with open("Allocatedcsv/"+lot+".csv", 'a', newline='') as file:
+                                                
+                                        writer = csv.writer(file)
+                                        writer.writerows(row_list)
+                                        i=-1
+                                        k=0
+                        with open("csvfiles/"+gtin+".csv", newline='') as f:
+                                        readobj=csv.reader(f)
+                                        for row in readobj:
+                                            t=row[2]        
+                                    
+                                        
+                                
+                                
+                                    
+                                            i=i+1
+                                            # k=k+1
+                                            if(k>int(minq)):
+                                                break
+                                                            
+                        
+                                            with open("Allocatedcsv/"+lot+".csv", 'a', newline='') as file:
+                                                
+                                                writer = csv.writer(file)
+                                                if(k!=0):
+                                                    valuelist = [i,gtin,t, "allocated",minq,lot],
+                                                    writer.writerows(valuelist)
+                                                k=k+1
+                                                slnolist=[]
+                                                rowIndex=[]
+                                                counter=1
+                                                loopcounter=-1
+                        with open("csvfiles/"+gtin+".csv", newline='') as f:
+
+                                    readobj=csv.reader(f)
+
+                                    for row in readobj:
+
+                                        if(row[3]=="notallow"):
+
+                                            slnolist.append(row[2])
+
+                                            rowIndex.append(loopcounter)
+
+                                            counter=counter+1
+
+                                        if(counter > int(minq)):
+
+                                            break
+
+                                
+
+                                        loopcounter=loopcounter+1
+
+                        json_numbers = json.dumps(slnolist)
+                        df=pd.read_csv("csvfiles/"+gtin+".csv")
+
+                        for value in rowIndex:
+
+                                    df.loc[value,'Status']="allocated"
+
+                        df.to_csv("csvfiles/"+gtin+".csv",index=False)
+                                
+                                
+                        # df=pd.read_csv("csvfiles/"+gtin+".csv")
+                        # print("start to deleting")
+                        # with open("csvfiles/"+gtin+".csv")  as f:
+                        #                 readobj=csv.reader(f)
+                        #                 counter=-1
+                        #                 for row in readobj:
+                        #                         if counter<int(minq):
+                        #                             df=df.loc[df['Status']=='notallow']
+                        #                             df.shape
+                        #                             # print("doing") 
+                        #                         counter=counter+1
+                        # df.to_csv("csvfiles/"+gtin+".csv",index=False)                
+                        # print("deleting completed")                                            
+                                                                    
+                                                        
+                                    
+                                        
+                                            
+                                            
+                        # gtin=request.data['gtin_number']
+                        count=0
+                        with open("csvfiles/"+gtin+".csv")  as f:
+                            readobj=csv.reader(f)
+                            for row in readobj:
+                                if(row[3]=="notallow"):
+                                    count=count+1
+                             
+                            print(count)
+                                # results = pd.read_csv("csvfiles/"+gtin+".csv")
+                                # count=len(results)
+                                # print(count)
+                            obj = Gtins.objects.get(gtin=gtin)
+                            detailObj=Gtins.objects.all().filter(gtin=obj.gtin).update(available_quantity=count)
+                                
+                            obj = Allocatednumbers.objects.get(batch_number=lot)
+                            detailObj=Allocatednumbers.objects.all().filter(batch_number=obj.batch_number).update(available_quantity=count)
+                            historysave=History(modelname='Allocated Numbers',           #history table entry
+                                    savedid="noid",
+                                    operationdone="Allocated Seralnumbers For Batch Number "+lot+" "+"by"+" "+ loginname,
+                                    donebyuser=loginname,
+                                    donebyuserrole=loginuserrole, 
+                                    description="Allocated Seralnumbers For Batch Number "+lot+" "+"by"+" "+ loginname,
+                                    donedatetime=datetime.datetime.now())
+                            historysave.save()
+                            print("history saved")
+                            return Response(200) 
+                                
+                    
+                    except:
+                        print("except second trty")
+                        return Response(500)            
+                                        
+                                    
+                    # return Response(200)
+                return Response(serializeobj.errors)
+            except:
+                print("except")
+                return Response(500) 
+        
+class ProductionOrderReportdate(APIView):  
+    def post(self, request):
+        # detailsObj = ProdReport.objects.all()
+    
+        startdate = request.data["datefrom"]
+        
+        toDate = request.data["dateto"]
+        # print(startdate)
+        # fromDate=str(request.POST.get('datefrom'))
+        # toDate=str(request.POST.get("dateto"))
+        # response  =ProductionReport.objects.all().filter(production_date=id)
+        
+        response=ProdReport.objects.all().filter(production_date__range=(startdate, toDate))
+       
+        serializeObj = ProdReportSerializer(response, many=True)
+        return Response(serializeObj.data)
+        
+    
+
+    

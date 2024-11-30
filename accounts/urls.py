@@ -31,4 +31,13 @@ urlpatterns = [
     # path('reg/delete/<int:pk>', views.deleteReg.as_view()),
     path('userPermissionEdit/', views.userPermissionEdit.as_view()),
     path('userrolePermissionsRead', views.UserrolePermissionsRead.as_view()),
+    # ......................................................................
+    # BACKUP CODE URLS
+    path('history/trash/<int:pk>', views.TrashHistory.as_view()),
+    path('history/restore/trash/<int:pk>', views.RestoreTrashHistory.as_view()),
+    path('register/trash/<int:pk>', views.TrashUser.as_view()),
+    path('register/restore/trash/<int:pk>', views.RestoreTrashUser.as_view()),
+    
+    path('loginmodel/', views.LoginModelView.as_view()),
+    path('loginmodel/update/<int:pk>', views.updateLoginModel.as_view()),
 ]

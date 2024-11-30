@@ -27,6 +27,18 @@ class ProductionReport(models.Model):
     rejectedbycamera=models.IntegerField(default=0)
     unused=models.IntegerField(default=0)
     production_date =models.DateField(null=True)
+    
+    ip_address=models.CharField(max_length=100,null=True)
+
+    gtin=models.CharField(max_length=100,null=True)
+
+    expiration_date = models.DateField(null=True)
+
+    type=models.CharField(max_length=100,null=True)            
+
+    numbers=models.IntegerField(null=True,blank=True)
+
+
 
 
     A=models.IntegerField(default=0)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from masterapp.models import Company,Customers,BarCodeType,SnProvider,Stock,Locations,ShipPO,Product,ProductionOrder,Gtins,PrinterdataTable,Downloadcodes
+from masterapp.models import Company,Customers,BarCodeType,SnProvider,Stock,Locations,ShipPO,Product,ProductionOrder,Gtins,PrinterdataTable,Downloadcodes,ScannerTable,ReworkTable,ProdReport,Allocatednumbers
 # Register your models here.
 admin.site.register(Company)
 admin.site.register(Customers)
@@ -13,5 +13,9 @@ admin.site.register(Stock)
 admin.site.register(Gtins)
 admin.site.register(PrinterdataTable)
 admin.site.register(Downloadcodes)
+admin.site.register(ScannerTable)
+admin.site.register(ReworkTable)
+admin.site.register(ProdReport)
+admin.site.register(Allocatednumbers)
 # admin.site.register(Tracelinksettings)
 # admin.site.register(Erpsetting)

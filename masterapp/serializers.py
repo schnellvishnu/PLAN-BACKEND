@@ -1,11 +1,11 @@
-from masterapp.models import Company,Customers,BarCodeType,SnProvider, Stock,Locations,ShipPO,ProductionOrder,Product,Markets,Gtins,SnProvider,PrinterdataTable,Downloadcodes
+from masterapp.models import Company,Customers,BarCodeType,SnProvider, Stock,Locations,ShipPO,ProductionOrder,Product,Markets,Gtins,SnProvider,PrinterdataTable,Downloadcodes,ProdReport,Allocatednumbers
 from rest_framework import serializers
 
 class CompanySerializer(serializers.ModelSerializer):
     
     class Meta:
         model =Company
-        fields = ['id','company_name','created_by','address','state','zip','gln','city','country']
+        fields = ['id','company_name','created_by','address','state','zip','gln','city','country','companyflag']
 class CompanyErpSerializer(serializers.ModelSerializer):
                         
     class Meta:
@@ -34,7 +34,7 @@ class CustomersSerializer(serializers.ModelSerializer):
     
     class Meta:
         model =Customers
-        fields =['id','name','created_by','address','zip','group','country','state','city','status']
+        fields =['id','name','created_by','address','zip','group','country','state','city','status','customerflag']
         # fields="__all__"
         
 class CustomersPropertySerializer(serializers.ModelSerializer):
@@ -53,7 +53,7 @@ class LocationSerializer(serializers.ModelSerializer):
     
     class Meta:
         model =Locations
-        fields = ['id','customer_id','name','created_by','loc_gln','address','zip','state']
+        fields = ['id','customer_id','name','created_by','loc_gln','address','zip','state','city','locationflag']
         # fields="__all__"
         
 class LocationPropertySerializer(serializers.ModelSerializer):
@@ -66,7 +66,7 @@ class ProductSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Product
-        fields = ['id','customer_id','gtin_number','imn','created_by','name','status']
+        fields = ['id','customer_id','gtin_number','imn','created_by','name','status','productflag']
         
 
 class ProductErpSerializer(serializers.ModelSerializer):
@@ -97,7 +97,7 @@ class ShipPOSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShipPO
         fields="__all__"
-        # fields = ["id","shipping_order_name","source_location","destination_location","subject_name","shipping_date","batch_for_export","created_by"]
+        # fields = ["id","shipping_order_name","source_location","destination_location","subject_name","shipping_date","batch_for_export","created_by","shipping_time","process_order_number","status","process_no_original"]
         
 class ShipPOPropertySerializer(serializers.ModelSerializer):
                         
@@ -110,7 +110,7 @@ class ProductionOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductionOrder
         fields =['id','process_order_number','serialnoprovider','batch_number','manufacturing_location','product_conn','Production_line_id','regulation','production_date',
-        'expiration_date','packaging_Version','created_by','status','internal_material_number',"requested","produced","line","gtin_number","type"]
+        'expiration_date','packaging_Version','created_by','status','internal_material_number',"requested","produced","line","gtin_number","type","prodcutionorderflag"]
         # fields="__all__"
        
 class ProductionOrderPropertySerializer(serializers.ModelSerializer):
@@ -164,16 +164,31 @@ class ProductionorderHrfSerializer(serializers.ModelSerializer):
 class  GtinsSerializer(serializers.ModelSerializer):
                         class Meta:
                                 model=Gtins 
-                                fields=["id","gtin","available_quantity","minimum_quantity","renewal_quantity","snnumbers"]               
+                                fields=["id","gtin","available_quantity"]               
 
 
 class PrinterSerializer(serializers.ModelSerializer):
     class Meta:
         model=PrinterdataTable
-        fields=["id","numbers","expiration_date","lot","gtin","processordernumber","quantity","hrf","type"]  
+        fields=["id","numbers","expiration_date","lot","gtin","processordernumber","quantity","hrf","type","ip_address"]  
+        
+class BalancedslnoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=PrinterdataTable
+        fields=["id","gtin","balanced_serialnumbers"]          
         
              
 class DownloadcodesSerializer(serializers.ModelSerializer):
     class Meta:
         model=Downloadcodes
         fields="__all__"                      
+        
+class ProdReportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProdReport
+        fields = "__all__"  
+        
+class AllocatednumberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Allocatednumbers
+        fields=["id","batch_number","process_order_number","gtin_number","quantity","available_quantity","created_by"]  
